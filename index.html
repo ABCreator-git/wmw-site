@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Words and Music on Wheels — Ashish Bhagat</title>
+<meta name="description" content="Poems, engines, and the songs in between. A personal space by Ashish Bhagat.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Literata:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ===== HERO / TUNER ===== -->
+<header class="hero">
+  <div class="grille" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <p class="kicker">A.BHAGAT &mdash; PERSONAL FREQUENCY</p>
+    <h1 class="hero-title">Words &amp; Music<br>on Wheels</h1>
+    <p class="hero-sub">Poems, engines, and the songs stuck between the two.</p>
+  </div>
+
+  <nav class="tuner" aria-label="Section tuner">
+    <div class="tuner-strip" aria-hidden="true">
+      <div class="tuner-marks"></div>
+      <div class="tuner-needle" id="needle"></div>
+    </div>
+    <div class="presets">
+      <button class="preset" data-target="poetry" data-freq="91.1">
+        <span class="freq">91.1</span><span class="label">POETRY</span>
+      </button>
+      <button class="preset" data-target="garage" data-freq="100.5">
+        <span class="freq">100.5</span><span class="label">GARAGE</span>
+      </button>
+      <button class="preset" data-target="sound" data-freq="107.9">
+        <span class="freq">107.9</span><span class="label">SOUND</span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ===== POETRY ===== -->
+  <section id="poetry" class="station station-poetry">
+    <div class="station-head">
+      <span class="station-freq">91.1</span>
+      <h2 class="station-title">Poetry</h2>
+      <p class="station-note">verses, posted as they're written</p>
+    </div>
+
+    <div class="card-grid poetry-grid">
+
+      <article class="poem-card">
+        <h3>Ignition</h3>
+        <p class="poem-body">Turn the key and something old wakes up &mdash;<br>
+        not the engine first, but the wanting.<br>
+        Metal remembers every road<br>
+        the way a hand remembers a name<br>
+        it hasn't said in years.</p>
+        <p class="poem-meta">— A.B.</p>
+      </article>
+
+      <article class="poem-card">
+        <h3>Night Drive, Radio Low</h3>
+        <p class="poem-body">Somewhere between two stations<br>
+        is where I keep my heart:<br>
+        static soft enough to sleep in,<br>
+        a signal I can half make out,<br>
+        a highway that forgives the dark<br>
+        for taking its own time.</p>
+        <p class="poem-meta">— A.B.</p>
+      </article>
+
+      <article class="poem-card">
+        <h3>Odometer</h3>
+        <p class="poem-body">Every number here is a small grief &mdash;<br>
+        a mile I will not drive again.<br>
+        And still I press on,<br>
+        because the road behind<br>
+        was never the point.</p>
+        <p class="poem-meta">— A.B.</p>
+      </article>
+
+    </div>
+
+    <p class="station-footer-note">More coming. This dial only moves forward.</p>
+  </section>
+
+  <!-- ===== GARAGE ===== -->
+  <section id="garage" class="station station-garage">
+    <div class="station-head">
+      <span class="station-freq">100.5</span>
+      <h2 class="station-title">Garage</h2>
+      <p class="station-note">cars, opinions, and the industry I can't stop watching</p>
+    </div>
+
+    <div class="card-grid garage-grid">
+
+      <article class="plate-card">
+        <div class="plate" aria-hidden="true">
+          <span>NA</span><span>·</span><span>SIX</span>
+        </div>
+        <h3>On the sound of a flat-six</h3>
+        <p>Some engines are transportation. A handful are instruments. Everything I write about cars starts from that difference &mdash; and from wondering how long the industry will keep building the second kind.</p>
+      </article>
+
+      <article class="plate-card">
+        <div class="plate" aria-hidden="true">
+          <span>3</span><span>·</span><span>PEDAL</span>
+        </div>
+        <h3>Why manual still matters</h3>
+        <p>Not nostalgia &mdash; attention. A clutch pedal asks something of you that a paddle shifter never will. Notes on the last cars still asking.</p>
+      </article>
+
+      <article class="plate-card">
+        <div class="plate" aria-hidden="true">
+          <span>EV</span><span>·</span><span>NOW</span>
+        </div>
+        <h3>Watching the industry turn</h3>
+        <p>Electrification, software-defined everything, the slow death of the key. Where I think this goes, and what I hope survives the transition.</p>
+      </article>
+
+      <article class="plate-card">
+        <div class="plate" aria-hidden="true">
+          <span>DREAM</span><span>·</span><span>01</span>
+        </div>
+        <h3>The dream garage</h3>
+        <p>Three cars, no budget, all reasons. An evolving list of what I'd park if the world made sense.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===== SOUND ===== -->
+  <section id="sound" class="station station-sound">
+    <div class="station-head">
+      <span class="station-freq">107.9</span>
+      <h2 class="station-title">Sound</h2>
+      <p class="station-note">what's been on repeat, and why</p>
+    </div>
+
+    <ol class="tracklist">
+      <li class="track">
+        <span class="track-no">01</span>
+        <div class="track-body">
+          <p class="track-title">A song for the long way home</p>
+          <p class="track-note">The kind of track that makes a normal commute feel like the last leg of something bigger.</p>
+        </div>
+        <span class="vu" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+      </li>
+      <li class="track">
+        <span class="track-no">02</span>
+        <div class="track-body">
+          <p class="track-title">Something with a slow build</p>
+          <p class="track-note">Three minutes of patience that pay off exactly once, in the last chorus.</p>
+        </div>
+        <span class="vu" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+      </li>
+      <li class="track">
+        <span class="track-no">03</span>
+        <div class="track-body">
+          <p class="track-title">An old favorite, rediscovered</p>
+          <p class="track-note">Filed away for years, then it comes on shuffle and the whole week changes shape.</p>
+        </div>
+        <span class="vu" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+      </li>
+    </ol>
+    <p class="station-footer-note">Playlist updates as the rotation changes.</p>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about" class="about">
+    <div class="about-inner">
+      <h2>About this frequency</h2>
+      <p>This is a personal space, not a portfolio. Three things I love &mdash; poetry, cars, and music &mdash; that don't usually share a room, sharing one anyway. No fixed schedule. Post what feels true, when it's ready.</p>
+      <p class="about-signoff">— Ashish Bhagat</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-dial" aria-hidden="true"></div>
+  <p>Words and Music on Wheels &middot; wmw.ashishbhagat.com</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
