@@ -14,105 +14,12 @@
 
 <!-- ===== HERO / TUNER ===== -->
 <header class="hero">
-  <div class="hero-scene" aria-hidden="true">
-    <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-      <!-- sky -->
-      <rect x="0" y="0" width="1600" height="900" fill="#FBF6EC"/>
-      <circle cx="1180" cy="220" r="120" fill="#FFE1B0" opacity="0.7"/>
-
-      <!-- birds -->
-      <path d="M180 140 q14 -16 28 0 q14 -16 28 0" fill="none" stroke="#3B362F" stroke-width="3" stroke-linecap="round"/>
-      <path d="M260 180 q12 -14 24 0 q12 -14 24 0" fill="none" stroke="#3B362F" stroke-width="3" stroke-linecap="round"/>
-
-      <!-- far mountains -->
-      <path d="M0 420 L120 300 L230 400 L340 260 L480 410 L620 310 L760 420 L900 290 L1040 410 L1180 320 L1330 420 L1470 300 L1600 400 L1600 900 L0 900 Z"
-            fill="#E4E2FF" opacity="0.85" stroke="#C9C6F2" stroke-width="2"/>
-
-      <!-- mid mountains -->
-      <path d="M0 520 L160 380 L300 500 L460 350 L640 510 L820 370 L1000 500 L1180 360 L1360 500 L1500 400 L1600 480 L1600 900 L0 900 Z"
-            fill="#D6E9E0" opacity="0.9" stroke="#AFD9C7" stroke-width="2.5"/>
-      <!-- snow caps mid -->
-      <path d="M300 500 L340 470 L370 500 M1000 500 L1040 465 L1075 500 M640 510 L675 480 L705 510" fill="#FBF6EC" stroke="none"/>
-
-      <!-- near hills -->
-      <path d="M0 640 Q220 540 440 630 T900 610 T1600 650 L1600 900 L0 900 Z"
-            fill="#EFEADB" stroke="#D8CDAE" stroke-width="2.5"/>
-
-      <!-- pine trees along hillside -->
-      <g fill="#6E8E73" stroke="#3B362F" stroke-width="1.4">
-        <path d="M120 610 L136 570 L152 610 Z"/>
-        <path d="M140 620 L156 578 L172 620 Z"/>
-        <path d="M1360 600 L1376 558 L1392 600 Z"/>
-        <path d="M1385 610 L1401 566 L1417 610 Z"/>
-        <path d="M1410 618 L1426 578 L1442 618 Z"/>
-      </g>
-
-      <!-- cafe on the hill -->
-      <g transform="translate(210,470)">
-        <!-- hanging sign post -->
-        <line x1="-40" y1="20" x2="-40" y2="-6" stroke="#3B362F" stroke-width="3"/>
-        <rect x="-66" y="-6" width="52" height="16" rx="2" fill="#FBF6EC" stroke="#3B362F" stroke-width="2.5"/>
-        <text x="-40" y="6" font-family="Kalam, cursive" font-size="11" fill="#3B362F" text-anchor="middle">CAFE</text>
-
-        <!-- building body -->
-        <rect x="0" y="30" width="150" height="80" fill="#FBF6EC" stroke="#3B362F" stroke-width="3"/>
-        <!-- roof -->
-        <path d="M-16 30 L75 -18 L166 30 Z" fill="#E4574A" stroke="#3B362F" stroke-width="3" stroke-linejoin="round"/>
-        <!-- door -->
-        <rect x="62" y="70" width="26" height="40" fill="none" stroke="#3B362F" stroke-width="2.5"/>
-        <!-- windows -->
-        <rect x="14" y="55" width="30" height="26" fill="#D6E9E0" stroke="#3B362F" stroke-width="2.5"/>
-        <rect x="106" y="55" width="30" height="26" fill="#D6E9E0" stroke="#3B362F" stroke-width="2.5"/>
-        <!-- awning -->
-        <path d="M4 55 L46 55 L40 68 L10 68 Z" fill="#E4574A" opacity="0.85"/>
-        <!-- outdoor table -->
-        <line x1="150" y1="110" x2="150" y2="92" stroke="#3B362F" stroke-width="2.5"/>
-        <ellipse cx="150" cy="90" rx="16" ry="5" fill="#FBF6EC" stroke="#3B362F" stroke-width="2.5"/>
-      </g>
-
-      <!-- string lights across the scene -->
-      <path d="M120 440 Q400 400 700 440" fill="none" stroke="#3B362F" stroke-width="1.6" opacity="0.5"/>
-
-      <!-- road -->
-      <path d="M560 900 L760 560 L860 560 L1220 900 Z" fill="#5B5A66" opacity="0.9"/>
-      <path d="M560 900 L760 560" stroke="#3B362F" stroke-width="3" fill="none"/>
-      <path d="M1220 900 L860 560" stroke="#3B362F" stroke-width="3" fill="none"/>
-      <path d="M810 900 L806 560" stroke="#FBF6EC" stroke-width="5" stroke-dasharray="18 16" opacity="0.85"/>
-
-      <!-- car: red muscle car, side/three-quarter, facing the mountains -->
-      <g transform="translate(870,700)">
-        <ellipse cx="70" cy="118" rx="150" ry="14" fill="#3B362F" opacity="0.12"/>
-        <!-- body -->
-        <path d="M-40 100 L-30 70 Q-18 46 20 42 L70 40 Q100 40 118 56 L200 60 Q216 62 218 78 L218 100 Z"
-              fill="#C81E2C" stroke="#3B362F" stroke-width="3.5" stroke-linejoin="round"/>
-        <!-- cabin -->
-        <path d="M20 42 Q34 12 70 10 Q104 10 118 40 Z" fill="#C81E2C" stroke="#3B362F" stroke-width="3.5" stroke-linejoin="round"/>
-        <!-- window -->
-        <path d="M34 38 Q42 20 68 18 Q92 18 102 38 Z" fill="#D6E9E0" stroke="#3B362F" stroke-width="2.5"/>
-        <!-- racing stripes -->
-        <rect x="-10" y="42" width="14" height="58" fill="#FBF6EC" opacity="0.9" transform="skewX(-8)"/>
-        <rect x="8" y="40" width="14" height="60" fill="#FBF6EC" opacity="0.9" transform="skewX(-8)"/>
-        <!-- headlight -->
-        <circle cx="210" cy="72" r="7" fill="#FFE1B0" stroke="#3B362F" stroke-width="2"/>
-        <!-- wheels -->
-        <circle cx="0" cy="100" r="26" fill="#3B362F"/>
-        <circle cx="0" cy="100" r="11" fill="#EFEADB"/>
-        <circle cx="168" cy="100" r="26" fill="#3B362F"/>
-        <circle cx="168" cy="100" r="11" fill="#EFEADB"/>
-      </g>
-
-      <!-- person standing beside the car, looking at the valley -->
-      <g transform="translate(1140,650)">
-        <circle cx="0" cy="0" r="12" fill="#3B362F"/>
-        <path d="M0 12 Q-4 40 -2 70 L10 70 Q12 40 6 12 Z" fill="#3B362F"/>
-        <path d="M-2 70 L-6 112 M10 70 L14 112" stroke="#3B362F" stroke-width="6" stroke-linecap="round"/>
-        <path d="M0 20 L-20 44 M0 20 L20 42" stroke="#3B362F" stroke-width="5" stroke-linecap="round"/>
-      </g>
-    </svg>
+  <div class="hero-scene hero-scene-photo" aria-hidden="true" style="background-image:url('hero-bg.jpg');">
     <div class="hero-scrim"></div>
   </div>
 
   <div class="hero-inner">
+    <img src="header-name-gradient-final.png" alt="@shish Bhagat" class="hero-signature">
     <p class="kicker">A.BHAGAT &nbsp;/&nbsp; PERSONAL LAB</p>
     <h1 class="hero-title">Words &amp; music<br>on <span class="grad-text">wheels</span></h1>
     <p class="hero-sub">Poems, engines, and the songs stuck between the two.</p>

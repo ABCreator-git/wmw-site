@@ -572,3 +572,25 @@ a{ color:inherit; }
   .spec dt{ font-size:1.7rem; }
   .segnav{ flex-wrap:wrap; }
 }
+/* ===== Additions for new hero background photo + name signature ===== */
+
+.hero-scene-photo {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-signature {
+  display: block;
+  height: 56px;
+  width: auto;
+  margin: 0 0 12px 0;
+}
+
+@media (min-width: 768px) {
+  .hero-signature {
+    height: 72px;
+  }
+}
