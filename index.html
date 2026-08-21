@@ -7,80 +7,190 @@
 <meta name="description" content="Poems, engines, and the songs in between. A personal space by Ashish Bhagat.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Literata:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Literata:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&family=Kalam:wght@400;700&family=Noto+Serif+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <!-- ===== HERO / TUNER ===== -->
 <header class="hero">
-  <div class="grille" aria-hidden="true"></div>
+  <div class="hero-scene" aria-hidden="true">
+    <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- sky -->
+      <rect x="0" y="0" width="1600" height="900" fill="#FBF6EC"/>
+      <circle cx="1180" cy="220" r="120" fill="#FFE1B0" opacity="0.7"/>
+
+      <!-- birds -->
+      <path d="M180 140 q14 -16 28 0 q14 -16 28 0" fill="none" stroke="#3B362F" stroke-width="3" stroke-linecap="round"/>
+      <path d="M260 180 q12 -14 24 0 q12 -14 24 0" fill="none" stroke="#3B362F" stroke-width="3" stroke-linecap="round"/>
+
+      <!-- far mountains -->
+      <path d="M0 420 L120 300 L230 400 L340 260 L480 410 L620 310 L760 420 L900 290 L1040 410 L1180 320 L1330 420 L1470 300 L1600 400 L1600 900 L0 900 Z"
+            fill="#E4E2FF" opacity="0.85" stroke="#C9C6F2" stroke-width="2"/>
+
+      <!-- mid mountains -->
+      <path d="M0 520 L160 380 L300 500 L460 350 L640 510 L820 370 L1000 500 L1180 360 L1360 500 L1500 400 L1600 480 L1600 900 L0 900 Z"
+            fill="#D6E9E0" opacity="0.9" stroke="#AFD9C7" stroke-width="2.5"/>
+      <!-- snow caps mid -->
+      <path d="M300 500 L340 470 L370 500 M1000 500 L1040 465 L1075 500 M640 510 L675 480 L705 510" fill="#FBF6EC" stroke="none"/>
+
+      <!-- near hills -->
+      <path d="M0 640 Q220 540 440 630 T900 610 T1600 650 L1600 900 L0 900 Z"
+            fill="#EFEADB" stroke="#D8CDAE" stroke-width="2.5"/>
+
+      <!-- pine trees along hillside -->
+      <g fill="#6E8E73" stroke="#3B362F" stroke-width="1.4">
+        <path d="M120 610 L136 570 L152 610 Z"/>
+        <path d="M140 620 L156 578 L172 620 Z"/>
+        <path d="M1360 600 L1376 558 L1392 600 Z"/>
+        <path d="M1385 610 L1401 566 L1417 610 Z"/>
+        <path d="M1410 618 L1426 578 L1442 618 Z"/>
+      </g>
+
+      <!-- cafe on the hill -->
+      <g transform="translate(210,470)">
+        <!-- hanging sign post -->
+        <line x1="-40" y1="20" x2="-40" y2="-6" stroke="#3B362F" stroke-width="3"/>
+        <rect x="-66" y="-6" width="52" height="16" rx="2" fill="#FBF6EC" stroke="#3B362F" stroke-width="2.5"/>
+        <text x="-40" y="6" font-family="Kalam, cursive" font-size="11" fill="#3B362F" text-anchor="middle">CAFE</text>
+
+        <!-- building body -->
+        <rect x="0" y="30" width="150" height="80" fill="#FBF6EC" stroke="#3B362F" stroke-width="3"/>
+        <!-- roof -->
+        <path d="M-16 30 L75 -18 L166 30 Z" fill="#E4574A" stroke="#3B362F" stroke-width="3" stroke-linejoin="round"/>
+        <!-- door -->
+        <rect x="62" y="70" width="26" height="40" fill="none" stroke="#3B362F" stroke-width="2.5"/>
+        <!-- windows -->
+        <rect x="14" y="55" width="30" height="26" fill="#D6E9E0" stroke="#3B362F" stroke-width="2.5"/>
+        <rect x="106" y="55" width="30" height="26" fill="#D6E9E0" stroke="#3B362F" stroke-width="2.5"/>
+        <!-- awning -->
+        <path d="M4 55 L46 55 L40 68 L10 68 Z" fill="#E4574A" opacity="0.85"/>
+        <!-- outdoor table -->
+        <line x1="150" y1="110" x2="150" y2="92" stroke="#3B362F" stroke-width="2.5"/>
+        <ellipse cx="150" cy="90" rx="16" ry="5" fill="#FBF6EC" stroke="#3B362F" stroke-width="2.5"/>
+      </g>
+
+      <!-- string lights across the scene -->
+      <path d="M120 440 Q400 400 700 440" fill="none" stroke="#3B362F" stroke-width="1.6" opacity="0.5"/>
+
+      <!-- road -->
+      <path d="M560 900 L760 560 L860 560 L1220 900 Z" fill="#5B5A66" opacity="0.9"/>
+      <path d="M560 900 L760 560" stroke="#3B362F" stroke-width="3" fill="none"/>
+      <path d="M1220 900 L860 560" stroke="#3B362F" stroke-width="3" fill="none"/>
+      <path d="M810 900 L806 560" stroke="#FBF6EC" stroke-width="5" stroke-dasharray="18 16" opacity="0.85"/>
+
+      <!-- car: red muscle car, side/three-quarter, facing the mountains -->
+      <g transform="translate(870,700)">
+        <ellipse cx="70" cy="118" rx="150" ry="14" fill="#3B362F" opacity="0.12"/>
+        <!-- body -->
+        <path d="M-40 100 L-30 70 Q-18 46 20 42 L70 40 Q100 40 118 56 L200 60 Q216 62 218 78 L218 100 Z"
+              fill="#C81E2C" stroke="#3B362F" stroke-width="3.5" stroke-linejoin="round"/>
+        <!-- cabin -->
+        <path d="M20 42 Q34 12 70 10 Q104 10 118 40 Z" fill="#C81E2C" stroke="#3B362F" stroke-width="3.5" stroke-linejoin="round"/>
+        <!-- window -->
+        <path d="M34 38 Q42 20 68 18 Q92 18 102 38 Z" fill="#D6E9E0" stroke="#3B362F" stroke-width="2.5"/>
+        <!-- racing stripes -->
+        <rect x="-10" y="42" width="14" height="58" fill="#FBF6EC" opacity="0.9" transform="skewX(-8)"/>
+        <rect x="8" y="40" width="14" height="60" fill="#FBF6EC" opacity="0.9" transform="skewX(-8)"/>
+        <!-- headlight -->
+        <circle cx="210" cy="72" r="7" fill="#FFE1B0" stroke="#3B362F" stroke-width="2"/>
+        <!-- wheels -->
+        <circle cx="0" cy="100" r="26" fill="#3B362F"/>
+        <circle cx="0" cy="100" r="11" fill="#EFEADB"/>
+        <circle cx="168" cy="100" r="26" fill="#3B362F"/>
+        <circle cx="168" cy="100" r="11" fill="#EFEADB"/>
+      </g>
+
+      <!-- person standing beside the car, looking at the valley -->
+      <g transform="translate(1140,650)">
+        <circle cx="0" cy="0" r="12" fill="#3B362F"/>
+        <path d="M0 12 Q-4 40 -2 70 L10 70 Q12 40 6 12 Z" fill="#3B362F"/>
+        <path d="M-2 70 L-6 112 M10 70 L14 112" stroke="#3B362F" stroke-width="6" stroke-linecap="round"/>
+        <path d="M0 20 L-20 44 M0 20 L20 42" stroke="#3B362F" stroke-width="5" stroke-linecap="round"/>
+      </g>
+    </svg>
+    <div class="hero-scrim"></div>
+  </div>
+
   <div class="hero-inner">
-    <p class="kicker">A.BHAGAT &mdash; PERSONAL FREQUENCY</p>
-    <h1 class="hero-title">Words &amp; Music<br>on Wheels</h1>
+    <p class="kicker">A.BHAGAT &nbsp;/&nbsp; PERSONAL LAB</p>
+    <h1 class="hero-title">Words &amp; music<br>on <span class="grad-text">wheels</span></h1>
     <p class="hero-sub">Poems, engines, and the songs stuck between the two.</p>
   </div>
 
-  <nav class="tuner" aria-label="Section tuner">
-    <div class="tuner-strip" aria-hidden="true">
-      <div class="tuner-marks"></div>
-      <div class="tuner-needle" id="needle"></div>
-    </div>
-    <div class="presets">
-      <button class="preset" data-target="poetry" data-freq="91.1">
-        <span class="freq">91.1</span><span class="label">POETRY</span>
-      </button>
-      <button class="preset" data-target="garage" data-freq="100.5">
-        <span class="freq">100.5</span><span class="label">GARAGE</span>
-      </button>
-      <button class="preset" data-target="sound" data-freq="107.9">
-        <span class="freq">107.9</span><span class="label">SOUND</span>
-      </button>
-    </div>
+  <nav class="segnav" aria-label="Section tuner">
+    <span class="segnav-pill" id="pill"></span>
+    <button class="segbtn" data-target="poetry" data-color="coral">
+      <span class="dot"></span>Poetry
+    </button>
+    <button class="segbtn" data-target="garage" data-color="indigo">
+      <span class="dot"></span>Garage
+    </button>
+    <button class="segbtn" data-target="sound" data-color="teal">
+      <span class="dot"></span>Sound
+    </button>
   </nav>
 </header>
 
 <main>
 
-  <!-- ===== POETRY ===== -->
+  <!-- ===== POETRY (diary) ===== -->
   <section id="poetry" class="station station-poetry">
     <div class="station-head">
       <span class="station-freq">91.1</span>
       <h2 class="station-title">Poetry</h2>
-      <p class="station-note">verses, posted as they're written</p>
+      <p class="station-note">a diary of verses, posted as they're written</p>
     </div>
 
-    <div class="card-grid poetry-grid">
+    <div class="diary-stack">
 
-      <article class="poem-card">
-        <h3>Ignition</h3>
-        <p class="poem-body">Turn the key and something old wakes up &mdash;<br>
-        not the engine first, but the wanting.<br>
-        Metal remembers every road<br>
-        the way a hand remembers a name<br>
-        it hasn't said in years.</p>
-        <p class="poem-meta">— A.B.</p>
+      <article class="diary-entry">
+        <div class="diary-entry-inner">
+          <div class="diary-dateline">
+            <span class="diary-date">14 June</span>
+            <span class="diary-rule"></span>
+          </div>
+          <h3 class="diary-title">Ignition</h3>
+          <p class="poem-body">Turn the key and something old wakes up &mdash;<br>
+          not the engine first, but the wanting.<br>
+          Metal remembers every road<br>
+          the way a hand remembers a name<br>
+          it hasn't said in years.</p>
+          <p class="diary-sign">— A.B.</p>
+        </div>
       </article>
 
-      <article class="poem-card">
-        <h3>Night Drive, Radio Low</h3>
-        <p class="poem-body">Somewhere between two stations<br>
-        is where I keep my heart:<br>
-        static soft enough to sleep in,<br>
-        a signal I can half make out,<br>
-        a highway that forgives the dark<br>
-        for taking its own time.</p>
-        <p class="poem-meta">— A.B.</p>
+      <article class="diary-entry diary-entry-alt">
+        <div class="diary-entry-inner">
+          <div class="diary-dateline">
+            <span class="diary-date">2 July</span>
+            <span class="diary-rule"></span>
+          </div>
+          <h3 class="diary-title">Night Drive, Radio Low</h3>
+          <p class="poem-body">Somewhere between two stations<br>
+          is where I keep my heart:<br>
+          static soft enough to sleep in,<br>
+          a signal I can half make out,<br>
+          a highway that forgives the dark<br>
+          for taking its own time.</p>
+          <p class="diary-sign">— A.B.</p>
+        </div>
       </article>
 
-      <article class="poem-card">
-        <h3>Odometer</h3>
-        <p class="poem-body">Every number here is a small grief &mdash;<br>
-        a mile I will not drive again.<br>
-        And still I press on,<br>
-        because the road behind<br>
-        was never the point.</p>
-        <p class="poem-meta">— A.B.</p>
+      <article class="diary-entry">
+        <div class="diary-entry-inner">
+          <div class="diary-dateline">
+            <span class="diary-date">19 July</span>
+            <span class="diary-rule"></span>
+          </div>
+          <h3 class="diary-title">Odometer</h3>
+          <p class="poem-body">Every number here is a small grief &mdash;<br>
+          a mile I will not drive again.<br>
+          And still I press on,<br>
+          because the road behind<br>
+          was never the point.</p>
+          <p class="diary-sign">— A.B.</p>
+        </div>
       </article>
 
     </div>
@@ -96,36 +206,62 @@
       <p class="station-note">cars, opinions, and the industry I can't stop watching</p>
     </div>
 
+    <dl class="spec-strip">
+      <div class="spec"><dt>6</dt><dd>cylinders, ideally</dd></div>
+      <div class="spec"><dt>3</dt><dd>pedals, no apologies</dd></div>
+      <div class="spec"><dt>1</dt><dd>dream garage, evolving</dd></div>
+      <div class="spec"><dt>&infin;</dt><dd>opinions, incoming</dd></div>
+    </dl>
+
     <div class="card-grid garage-grid">
 
       <article class="plate-card">
-        <div class="plate" aria-hidden="true">
-          <span>NA</span><span>·</span><span>SIX</span>
-        </div>
+        <svg class="plate-icon" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M14 50 Q10 50 10 46 L10 32 Q10 26 16 26 L20 26 L24 18 Q26 14 31 14 L40 14 L46 22 L52 24 Q56 25 56 30 L56 44 Q56 48 52 48 L48 48" fill="none" stroke="var(--indigo)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+          <circle cx="20" cy="50" r="6" fill="none" stroke="var(--indigo)" stroke-width="2.4"/>
+          <circle cx="46" cy="50" r="6" fill="none" stroke="var(--indigo)" stroke-width="2.4"/>
+          <line x1="26" y1="50" x2="40" y2="50" stroke="var(--indigo)" stroke-width="2.4"/>
+        </svg>
         <h3>On the sound of a flat-six</h3>
         <p>Some engines are transportation. A handful are instruments. Everything I write about cars starts from that difference &mdash; and from wondering how long the industry will keep building the second kind.</p>
       </article>
 
       <article class="plate-card">
-        <div class="plate" aria-hidden="true">
-          <span>3</span><span>·</span><span>PEDAL</span>
-        </div>
+        <svg class="plate-icon" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="14" r="5" fill="none" stroke="var(--indigo)" stroke-width="2.4"/>
+          <line x1="32" y1="19" x2="32" y2="30" stroke="var(--indigo)" stroke-width="2.4"/>
+          <path d="M12 30 H52" fill="none" stroke="var(--indigo)" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M12 30 V44 M32 30 V44 M52 30 V44" fill="none" stroke="var(--indigo)" stroke-width="2.4" stroke-linecap="round"/>
+          <circle cx="12" cy="44" r="2" fill="var(--indigo)"/>
+          <circle cx="32" cy="44" r="2" fill="var(--indigo)"/>
+          <circle cx="52" cy="44" r="2" fill="var(--indigo)"/>
+          <circle cx="12" cy="30" r="2" fill="var(--indigo)"/>
+          <circle cx="52" cy="30" r="2" fill="var(--indigo)"/>
+        </svg>
         <h3>Why manual still matters</h3>
         <p>Not nostalgia &mdash; attention. A clutch pedal asks something of you that a paddle shifter never will. Notes on the last cars still asking.</p>
       </article>
 
       <article class="plate-card">
-        <div class="plate" aria-hidden="true">
-          <span>EV</span><span>·</span><span>NOW</span>
-        </div>
+        <svg class="plate-icon" viewBox="0 0 64 64" aria-hidden="true">
+          <rect x="16" y="20" width="24" height="30" rx="3" fill="none" stroke="var(--indigo)" stroke-width="2.4"/>
+          <line x1="22" y1="14" x2="22" y2="20" stroke="var(--indigo)" stroke-width="2.4" stroke-linecap="round"/>
+          <line x1="34" y1="14" x2="34" y2="20" stroke="var(--indigo)" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M31 26 L23 38 L29 38 L27 46 L38 32 L31 32 Z" fill="var(--indigo)" stroke="none"/>
+          <path d="M40 30 H50 V44 H40" fill="none" stroke="var(--indigo)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
         <h3>Watching the industry turn</h3>
         <p>Electrification, software-defined everything, the slow death of the key. Where I think this goes, and what I hope survives the transition.</p>
       </article>
 
       <article class="plate-card">
-        <div class="plate" aria-hidden="true">
-          <span>DREAM</span><span>·</span><span>01</span>
-        </div>
+        <svg class="plate-icon" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M8 42 L12 30 Q14 26 19 26 L40 26 Q44 26 46 29 L52 36 L56 37 Q58 37 58 40 V42" fill="none" stroke="var(--indigo)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+          <line x1="8" y1="42" x2="58" y2="42" stroke="var(--indigo)" stroke-width="2.4"/>
+          <circle cx="19" cy="42" r="6" fill="none" stroke="var(--indigo)" stroke-width="2.4"/>
+          <circle cx="47" cy="42" r="6" fill="none" stroke="var(--indigo)" stroke-width="2.4"/>
+          <line x1="20" y1="30" x2="34" y2="30" stroke="var(--indigo)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
         <h3>The dream garage</h3>
         <p>Three cars, no budget, all reasons. An evolving list of what I'd park if the world made sense.</p>
       </article>
@@ -135,10 +271,15 @@
 
   <!-- ===== SOUND ===== -->
   <section id="sound" class="station station-sound">
-    <div class="station-head">
-      <span class="station-freq">107.9</span>
-      <h2 class="station-title">Sound</h2>
-      <p class="station-note">what's been on repeat, and why</p>
+    <div class="station-head sound-head">
+      <div>
+        <span class="station-freq">107.9</span>
+        <h2 class="station-title">Sound</h2>
+        <p class="station-note">what's been on repeat, and why</p>
+      </div>
+      <div class="eq-banner" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
     </div>
 
     <ol class="tracklist">
@@ -148,7 +289,7 @@
           <p class="track-title">A song for the long way home</p>
           <p class="track-note">The kind of track that makes a normal commute feel like the last leg of something bigger.</p>
         </div>
-        <span class="vu" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="vu" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
       </li>
       <li class="track">
         <span class="track-no">02</span>
@@ -156,7 +297,7 @@
           <p class="track-title">Something with a slow build</p>
           <p class="track-note">Three minutes of patience that pay off exactly once, in the last chorus.</p>
         </div>
-        <span class="vu" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="vu" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
       </li>
       <li class="track">
         <span class="track-no">03</span>
@@ -164,7 +305,7 @@
           <p class="track-title">An old favorite, rediscovered</p>
           <p class="track-note">Filed away for years, then it comes on shuffle and the whole week changes shape.</p>
         </div>
-        <span class="vu" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="vu" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
       </li>
     </ol>
     <p class="station-footer-note">Playlist updates as the rotation changes.</p>
