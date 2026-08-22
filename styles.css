@@ -3,7 +3,7 @@
    ============================================ */
 :root{
   --bg:        #FAFAF7;
-  --surface:   #FFFFFF;
+  --surface:   rgba(255,255,255,0.55);
   --ink:       #16151D;
   --ink-soft:  #5B5A66;
   --line:      rgba(22,21,29,0.08);
@@ -31,12 +31,31 @@
 *,*::before,*::after{ box-sizing:border-box; }
 html{ scroll-behavior:smooth; }
 
+.segnav,
+.spec,
+.plate-card,
+.track,
+.eq-banner,
+.diary-entry{
+  backdrop-filter:blur(14px) saturate(160%);
+  -webkit-backdrop-filter:blur(14px) saturate(160%);
+  border:1px solid rgba(255,255,255,0.4);
+}
+
 body{
   margin:0;
+  position:relative;
   background:var(--bg);
   color:var(--ink);
   font-family:var(--serif);
   -webkit-font-smoothing:antialiased;
+}
+
+.page-bg{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background:url('hero-bg.jpg') center center / cover no-repeat;
 }
 
 h1,h2,h3{ font-family:var(--display); margin:0; }
@@ -75,21 +94,25 @@ a{ color:inherit; }
   position:absolute;
   inset:0;
   background:linear-gradient(180deg,
-    rgba(251,246,236,0.15) 0%,
-    rgba(251,246,236,0.55) 45%,
-    var(--bg) 92%);
+    rgba(251,246,236,0.10) 0%,
+    rgba(251,246,236,0.02) 45%,
+    rgba(251,246,236,0) 100%);
+  pointer-events:none;
 }
 
 .hero-inner{
   position:relative;
   z-index:1;
   max-width:900px;
-  background:rgba(255,255,255,0.72);
-  backdrop-filter:blur(6px);
-  -webkit-backdrop-filter:blur(6px);
+  background:rgba(255,255,255,0.28);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
   border-radius:24px;
+  border:1px solid rgba(255,255,255,0.45);
   padding:2rem 2.4rem;
-  box-shadow:0 20px 50px rgba(22,21,29,0.08);
+  box-shadow:
+    0 20px 50px rgba(22,21,29,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.5);
 }
 
 .kicker{
@@ -225,7 +248,7 @@ a{ color:inherit; }
 /* ============================================
    POETRY — coral / diary
    ============================================ */
-.station-poetry{ background:var(--coral-bg); }
+.station-poetry{ background:rgba(255,246,243,0.5); }
 .station-poetry .station-freq{ color:var(--coral); }
 
 .diary-stack{
@@ -311,7 +334,7 @@ a{ color:inherit; }
 /* ============================================
    GARAGE — indigo
    ============================================ */
-.station-garage{ background:var(--indigo-bg); }
+.station-garage{ background:rgba(245,244,255,0.5); }
 .station-garage .station-freq{ color:var(--indigo); }
 
 .spec-strip{
@@ -382,7 +405,7 @@ a{ color:inherit; }
 /* ============================================
    SOUND — teal / equalizer
    ============================================ */
-.station-sound{ background:var(--teal-bg); }
+.station-sound{ background:rgba(241,251,247,0.5); }
 .station-sound .station-freq{ color:var(--teal); }
 
 .sound-head{
@@ -509,7 +532,7 @@ a{ color:inherit; }
    ABOUT
    ============================================ */
 .about{
-  background:var(--bg);
+  background:rgba(250,250,247,0.5);
   padding:11vh 6vw;
   border-top:1px solid var(--line);
 }
@@ -537,7 +560,7 @@ a{ color:inherit; }
    FOOTER
    ============================================ */
 .site-footer{
-  background:var(--bg);
+  background:rgba(250,250,247,0.5);
   padding:3rem 6vw 4rem;
   display:flex;
   align-items:center;
