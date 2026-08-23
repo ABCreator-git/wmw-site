@@ -12,7 +12,16 @@
 <link rel="stylesheet" href="styles.css">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
-  .admin-wrap{ position:relative; z-index:1; max-width:760px; margin:0 auto; padding:6vh 6vw 10vh; }
+  .admin-wrap{ position:relative; z-index:1; max-width:820px; margin:0 auto; padding:5vh 6vw 10vh; }
+  .top-bar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:1.4rem; }
+  .home-link{
+    display:inline-flex; align-items:center; gap:0.4rem;
+    font-family:var(--mono); font-size:0.78rem; color:var(--ink-soft);
+    background:rgba(255,255,255,0.86); border:1px solid var(--line); border-radius:999px;
+    padding:0.5rem 1rem; backdrop-filter:blur(10px);
+  }
+  .home-link:hover{ color:var(--indigo); }
+
   .admin-header{
     background:rgba(255,255,255,0.86);
     backdrop-filter:blur(14px) saturate(160%);
@@ -23,6 +32,7 @@
   }
   .admin-wrap h1{ font-size:2rem; font-weight:800; margin-bottom:0.4rem; color:var(--ink); }
   .admin-wrap .sub{ font-family:var(--mono); font-size:0.8rem; color:var(--ink-soft); }
+
   .gate, .panel{
     background:rgba(255,255,255,0.86);
     backdrop-filter:blur(14px) saturate(160%);
@@ -31,15 +41,9 @@
     box-shadow:0 14px 34px rgba(22,21,29,0.1);
   }
   .panel{ padding:1.8rem 2rem; margin-bottom:2rem; }
-
   .gate{ padding-bottom:0.4rem; }
 
-  .auth-columns{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    align-items:start;
-    gap:0;
-  }
+  .auth-columns{ display:grid; grid-template-columns:1fr 1fr; align-items:start; gap:0; }
   .auth-col{ padding:1.9rem 2rem; }
   .auth-col + .auth-col{ border-left:1px solid var(--line); }
   .auth-col h2{ font-size:1.1rem; font-weight:800; margin-bottom:1.2rem; color:var(--ink); }
@@ -64,15 +68,8 @@
   .status.error{ color:var(--coral); }
   .status.ok{ color:var(--teal); }
 
-  .google-section{
-    border-top:1px solid var(--line);
-    padding:1.6rem 2rem 1.8rem;
-    text-align:center;
-  }
-  .divider{
-    font-family:var(--mono); font-size:0.7rem; color:var(--ink-soft);
-    margin-bottom:1.1rem;
-  }
+  .google-section{ border-top:1px solid var(--line); padding:1.6rem 2rem 1.8rem; text-align:center; }
+  .divider{ font-family:var(--mono); font-size:0.7rem; color:var(--ink-soft); margin-bottom:1.1rem; }
   .google-btn-wrap{ display:flex; justify-content:center; }
 
   .entry-list{ display:flex; flex-direction:column; gap:1rem; }
@@ -84,6 +81,16 @@
   .entry-row h3{ font-size:1.05rem; font-weight:700; margin-bottom:0.3rem; }
   .entry-row .actions{ display:flex; gap:0.5rem; flex-shrink:0; }
   .entry-row .actions button{ font-size:0.78rem; padding:0.4rem 0.9rem; width:auto; }
+
+  .user-table{ width:100%; border-collapse:collapse; font-family:var(--serif); font-size:0.9rem; }
+  .user-table th{ text-align:left; font-family:var(--mono); font-size:0.7rem; letter-spacing:0.05em; color:var(--ink-soft); padding:0.5rem 0.8rem; border-bottom:1px solid var(--line); }
+  .user-table td{ padding:0.6rem 0.8rem; border-bottom:1px solid var(--line); color:var(--ink); }
+
+  .admin-badge{
+    display:inline-block; font-family:var(--mono); font-size:0.68rem;
+    background:var(--indigo-soft); color:var(--indigo); padding:0.2rem 0.6rem; border-radius:999px;
+    margin-left:0.6rem; vertical-align:middle;
+  }
 
   .session-bar{
     display:flex; justify-content:space-between; align-items:center;
@@ -108,9 +115,13 @@
 <div class="page-bg" aria-hidden="true"></div>
 
 <div class="admin-wrap">
+  <div class="top-bar">
+    <a href="index.html" class="home-link">&larr; Home</a>
+  </div>
+
   <div class="admin-header">
     <h1>Your Workspace</h1>
-    <p class="sub">Login or create an account to post, edit, and manage poems</p>
+    <p class="sub">Login or create an account to post, edit, and manage your poems</p>
   </div>
 
   <div class="gate" id="authGate">
@@ -132,6 +143,10 @@
       <div class="auth-col">
         <h2>Sign up</h2>
         <div class="field">
+          <label for="signupName">Your name</label>
+          <input type="text" id="signupName" placeholder="e.g. Ashish Bhagat">
+        </div>
+        <div class="field">
           <label for="signupEmail">Email</label>
           <input type="email" id="signupEmail" placeholder="you@gmail.com">
         </div>
@@ -150,9 +165,7 @@
 
     <div class="google-section">
       <div class="divider">or continue with</div>
-      <div class="google-btn-wrap">
-        <div id="googleBtn"></div>
-      </div>
+      <div class="google-btn-wrap"><div id="googleBtn"></div></div>
     </div>
   </div>
 
@@ -162,11 +175,10 @@
       <button class="btn ghost" id="logoutBtn">Log out</button>
     </div>
 
-    <div class="panel">
+    <div class="panel" id="seedPanel" hidden>
       <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:0.6rem;">First time setup</h2>
       <p style="font-family:var(--serif); font-size:0.92rem; color:var(--ink-soft); margin-bottom:1rem;">
-        Your storage is empty. If you had the original 3 poems on the site before, import them here once —
-        this is safe to skip if you already have poems saved.
+        Your storage is empty. If you had the original 3 poems on the site before, import them here once.
       </p>
       <button class="btn ghost" id="seedBtn">Import original 3 poems</button>
       <p class="status" id="seedStatus"></p>
@@ -195,247 +207,241 @@
     </div>
 
     <div class="panel">
-      <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem;">Existing poems</h2>
+      <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem;">My poems</h2>
       <div class="entry-list" id="entryList"></div>
+    </div>
+
+    <div class="panel" id="adminPoemsPanel" hidden>
+      <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem;">All poems <span class="admin-badge">Admin</span></h2>
+      <div class="entry-list" id="adminEntryList"></div>
+    </div>
+
+    <div class="panel" id="adminUsersPanel" hidden>
+      <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem;">Registered users <span class="admin-badge">Admin</span></h2>
+      <table class="user-table" id="userTable">
+        <thead><tr><th>Name</th><th>Email</th><th>Signed up via</th><th>Joined</th></tr></thead>
+        <tbody id="userTableBody"></tbody>
+      </table>
     </div>
   </div>
 </div>
 
 <script>
 (function(){
-  // ---- Fixed config: no API URL or token entry for the user ----
   var API_BASE = "https://wmw-poems-api.ash-bhagat0511.workers.dev";
   var GOOGLE_CLIENT_ID = "236184694606-giqg94l88p9u8l5ocvkvpla6g1ugvphi.apps.googleusercontent.com";
 
   var authGate = document.getElementById('authGate');
   var app = document.getElementById('app');
   var sessionEmailEl = document.getElementById('sessionEmail');
+  var seedPanel = document.getElementById('seedPanel');
+  var adminPoemsPanel = document.getElementById('adminPoemsPanel');
+  var adminUsersPanel = document.getElementById('adminUsersPanel');
 
-  var token = null;
-  var userEmail = null;
-
-  function saveSession(t, email){
-    token = t; userEmail = email;
-    try {
-      localStorage.setItem('wmw_session', JSON.stringify({ token: t, email: email }));
-    } catch(e){}
-    enterApp();
-  }
-
-  function clearSession(){
-    token = null; userEmail = null;
-    try { localStorage.removeItem('wmw_session'); } catch(e){}
-    app.hidden = true;
-    authGate.hidden = false;
-  }
-
-  function enterApp(){
-    authGate.hidden = true;
-    app.hidden = false;
-    sessionEmailEl.textContent = 'Logged in as ' + userEmail;
-    loadPoems();
-  }
-
-  function authHeaders(){
-    return { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
-  }
+  var token = null, userEmail = null, userIsAdmin = false;
 
   function escapeHtml(s){
     return String(s).replace(/[&<>"']/g, function(c){
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
     });
   }
+  function authHeaders(){ return { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }; }
 
-  // ---- Restore existing session ----
+  function saveSession(t, email, isAdminFlag){
+    token = t; userEmail = email; userIsAdmin = !!isAdminFlag;
+    try { localStorage.setItem('wmw_session', JSON.stringify({ token: t, email: email, isAdmin: userIsAdmin })); } catch(e){}
+    enterApp();
+  }
+  function clearSession(){
+    token = null; userEmail = null; userIsAdmin = false;
+    try { localStorage.removeItem('wmw_session'); } catch(e){}
+    app.hidden = true; authGate.hidden = false;
+  }
+  function enterApp(){
+    authGate.hidden = true; app.hidden = false;
+    sessionEmailEl.textContent = 'Logged in as ' + userEmail + (userIsAdmin ? ' (admin)' : '');
+    seedPanel.hidden = !userIsAdmin;
+    adminPoemsPanel.hidden = !userIsAdmin;
+    adminUsersPanel.hidden = !userIsAdmin;
+    loadMyPoems();
+    if(userIsAdmin){ loadAllPoemsAdmin(); loadUsers(); }
+  }
+
   try {
     var saved = JSON.parse(localStorage.getItem('wmw_session') || 'null');
-    if(saved && saved.token && saved.email){
-      token = saved.token; userEmail = saved.email;
-      enterApp();
-    }
+    if(saved && saved.token && saved.email){ saveSession(saved.token, saved.email, saved.isAdmin); }
   } catch(e){}
 
   document.getElementById('logoutBtn').addEventListener('click', clearSession);
 
-  // ---- Email/password login ----
+  // ---- Login ----
   document.getElementById('loginBtn').addEventListener('click', function(){
     var email = document.getElementById('loginEmail').value.trim();
     var password = document.getElementById('loginPassword').value;
     var status = document.getElementById('loginStatus');
-    if(!email || !password){
-      status.textContent = 'Enter your email and password.';
-      status.className = 'status error';
-      return;
-    }
-    status.textContent = 'Logging in…';
-    status.className = 'status';
+    if(!email || !password){ status.textContent = 'Enter your email and password.'; status.className = 'status error'; return; }
+    status.textContent = 'Logging in…'; status.className = 'status';
     fetch(API_BASE + '/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: email, password: password })
     })
       .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, data: d }; }); })
       .then(function(res){
         if(!res.ok) throw new Error(res.data.error || 'Login failed');
         status.textContent = '';
-        saveSession(res.data.token, res.data.email);
+        saveSession(res.data.token, res.data.email, res.data.isAdmin);
       })
-      .catch(function(err){
-        status.textContent = err.message;
-        status.className = 'status error';
-      });
+      .catch(function(err){ status.textContent = err.message; status.className = 'status error'; });
   });
 
-  // ---- Email/password signup ----
+  // ---- Sign up ----
   document.getElementById('signupBtn').addEventListener('click', function(){
+    var name = document.getElementById('signupName').value.trim();
     var email = document.getElementById('signupEmail').value.trim();
     var password = document.getElementById('signupPassword').value;
     var password2 = document.getElementById('signupPassword2').value;
     var status = document.getElementById('signupStatus');
 
-    if(!email || !password){
-      status.textContent = 'Enter an email and password.';
-      status.className = 'status error';
-      return;
-    }
-    if(password.length < 8){
-      status.textContent = 'Password must be at least 8 characters.';
-      status.className = 'status error';
-      return;
-    }
-    if(password !== password2){
-      status.textContent = 'Passwords do not match.';
-      status.className = 'status error';
-      return;
-    }
+    if(!name){ status.textContent = 'Enter your name.'; status.className = 'status error'; return; }
+    if(!email || !password){ status.textContent = 'Enter an email and password.'; status.className = 'status error'; return; }
+    if(password.length < 8){ status.textContent = 'Password must be at least 8 characters.'; status.className = 'status error'; return; }
+    if(password !== password2){ status.textContent = 'Passwords do not match.'; status.className = 'status error'; return; }
 
-    status.textContent = 'Creating account…';
-    status.className = 'status';
+    status.textContent = 'Creating account…'; status.className = 'status';
     fetch(API_BASE + '/auth/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email, password: password })
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, email: email, password: password })
     })
       .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, data: d }; }); })
       .then(function(res){
         if(!res.ok) throw new Error(res.data.error || 'Sign up failed');
         status.textContent = '';
-        saveSession(res.data.token, res.data.email);
+        saveSession(res.data.token, res.data.email, res.data.isAdmin);
       })
-      .catch(function(err){
-        status.textContent = err.message;
-        status.className = 'status error';
-      });
+      .catch(function(err){ status.textContent = err.message; status.className = 'status error'; });
   });
 
   // ---- Google Sign-In ----
   function handleGoogleCredential(response){
     fetch(API_BASE + '/auth/google', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ credential: response.credential })
     })
       .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, data: d }; }); })
       .then(function(res){
         if(!res.ok) throw new Error(res.data.error || 'Google sign-in failed');
-        saveSession(res.data.token, res.data.email);
+        saveSession(res.data.token, res.data.email, res.data.isAdmin);
       })
       .catch(function(err){
         var status = document.getElementById('loginStatus');
-        status.textContent = err.message;
-        status.className = 'status error';
+        status.textContent = err.message; status.className = 'status error';
       });
   }
-  window.handleGoogleCredential = handleGoogleCredential;
-
   window.addEventListener('load', function(){
-    if(window.google && google.accounts && google.accounts.id && GOOGLE_CLIENT_ID.indexOf('YOUR_') !== 0){
-      google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleGoogleCredential
-      });
-      google.accounts.id.renderButton(
-        document.getElementById('googleBtn'),
-        { theme: 'outline', size: 'large', width: 260 }
-      );
+    if(window.google && google.accounts && google.accounts.id){
+      google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleGoogleCredential });
+      google.accounts.id.renderButton(document.getElementById('googleBtn'), { theme: 'outline', size: 'large', width: 260 });
     }
   });
 
-  // ---- Poem management (same as before, now using session token) ----
-  function loadPoems(){
+  // ---- My poems ----
+  function loadMyPoems(){
     var entryList = document.getElementById('entryList');
+    entryList.innerHTML = '<p class="status">Loading…</p>';
+    fetch(API_BASE + '/poems/mine', { headers: authHeaders() })
+      .then(function(r){ return r.json(); })
+      .then(function(poems){
+        if(!poems.length){ entryList.innerHTML = '<p class="status">You haven\'t posted any poems yet.</p>'; return; }
+        entryList.innerHTML = '';
+        poems.forEach(function(poem){ entryList.appendChild(renderRow(poem, true)); });
+      })
+      .catch(function(err){ entryList.innerHTML = '<p class="status error">Could not load: ' + escapeHtml(err.message) + '</p>'; });
+  }
+
+  function loadAllPoemsAdmin(){
+    var entryList = document.getElementById('adminEntryList');
     entryList.innerHTML = '<p class="status">Loading…</p>';
     fetch(API_BASE + '/poems')
       .then(function(r){ return r.json(); })
       .then(function(poems){
-        if(!poems.length){
-          entryList.innerHTML = '<p class="status">No poems yet.</p>';
-          return;
-        }
+        if(!poems.length){ entryList.innerHTML = '<p class="status">No poems yet.</p>'; return; }
         entryList.innerHTML = '';
-        poems.forEach(function(poem){
-          var row = document.createElement('div');
-          row.className = 'entry-row';
-          row.innerHTML =
-            '<div>' +
-              '<div class="meta">' + escapeHtml(poem.date || '') + (poem.author ? ' · ' + escapeHtml(poem.author) : '') + '</div>' +
-              '<h3>' + escapeHtml(poem.title) + '</h3>' +
-              '<div style="font-size:0.85rem; color:var(--ink-soft); white-space:pre-line;">' +
-                escapeHtml(poem.body.join('\n')) +
-              '</div>' +
-            '</div>' +
-            '<div class="actions">' +
-              '<button class="btn ghost" data-action="delete" data-id="' + poem.id + '">Delete</button>' +
-            '</div>';
-          entryList.appendChild(row);
-        });
+        poems.forEach(function(poem){ entryList.appendChild(renderRow(poem, true)); });
       })
-      .catch(function(err){
-        entryList.innerHTML = '<p class="status error">Could not load poems: ' + escapeHtml(err.message) + '</p>';
-      });
+      .catch(function(err){ entryList.innerHTML = '<p class="status error">Could not load: ' + escapeHtml(err.message) + '</p>'; });
   }
 
-  document.getElementById('entryList').addEventListener('click', function(e){
+  function loadUsers(){
+    var body = document.getElementById('userTableBody');
+    body.innerHTML = '<tr><td colspan="4">Loading…</td></tr>';
+    fetch(API_BASE + '/admin/users', { headers: authHeaders() })
+      .then(function(r){ return r.json(); })
+      .then(function(users){
+        if(!users.length){ body.innerHTML = '<tr><td colspan="4">No users yet.</td></tr>'; return; }
+        body.innerHTML = '';
+        users.forEach(function(u){
+          var tr = document.createElement('tr');
+          var joined = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—';
+          tr.innerHTML =
+            '<td>' + escapeHtml(u.name || '—') + '</td>' +
+            '<td>' + escapeHtml(u.email) + '</td>' +
+            '<td>' + escapeHtml(u.provider || '—') + '</td>' +
+            '<td>' + escapeHtml(joined) + '</td>';
+          body.appendChild(tr);
+        });
+      })
+      .catch(function(err){ body.innerHTML = '<tr><td colspan="4">Could not load: ' + escapeHtml(err.message) + '</td></tr>'; });
+  }
+
+  function renderRow(poem){
+    var row = document.createElement('div');
+    row.className = 'entry-row';
+    row.innerHTML =
+      '<div>' +
+        '<div class="meta">' + escapeHtml(poem.date || '') + (poem.author ? ' · ' + escapeHtml(poem.author) : '') + '</div>' +
+        '<h3>' + escapeHtml(poem.title) + '</h3>' +
+        '<div style="font-size:0.85rem; color:var(--ink-soft); white-space:pre-line;">' + escapeHtml(poem.body.join('\n')) + '</div>' +
+      '</div>' +
+      '<div class="actions"><button class="btn ghost" data-action="delete" data-id="' + poem.id + '">Delete</button></div>';
+    return row;
+  }
+
+  function handleDeleteClick(e){
     var btn = e.target.closest('button[data-action="delete"]');
     if(!btn) return;
     if(!confirm('Delete this poem? This cannot be undone.')) return;
     fetch(API_BASE + '/poems/' + btn.dataset.id, { method:'DELETE', headers: authHeaders() })
-      .then(function(r){ return r.json(); })
-      .then(function(){ loadPoems(); })
-      .catch(function(err){ alert('Delete failed: ' + err.message); });
-  });
+      .then(function(r){ return r.json().then(function(d){ return {ok:r.ok, data:d}; }); })
+      .then(function(res){
+        if(!res.ok) throw new Error(res.data.error || 'Delete failed');
+        loadMyPoems();
+        if(userIsAdmin) loadAllPoemsAdmin();
+      })
+      .catch(function(err){ alert(err.message); });
+  }
+  document.getElementById('entryList').addEventListener('click', handleDeleteClick);
+  document.getElementById('adminEntryList').addEventListener('click', handleDeleteClick);
 
   document.getElementById('seedBtn').addEventListener('click', function(){
     var status = document.getElementById('seedStatus');
-    status.textContent = 'Importing…';
-    status.className = 'status';
+    status.textContent = 'Importing…'; status.className = 'status';
     fetch('poems.json')
-      .then(function(r){
-        if(!r.ok) throw new Error('poems.json not found at this path (status ' + r.status + ')');
-        return r.json();
-      })
+      .then(function(r){ if(!r.ok) throw new Error('poems.json not found (status ' + r.status + ')'); return r.json(); })
       .then(function(poems){
         var chain = Promise.resolve();
         poems.forEach(function(poem){
           chain = chain.then(function(){
-            return fetch(API_BASE + '/poems', {
-              method: 'POST',
-              headers: authHeaders(),
-              body: JSON.stringify(poem)
-            });
+            return fetch(API_BASE + '/poems', { method: 'POST', headers: authHeaders(), body: JSON.stringify(poem) });
           });
         });
         return chain;
       })
       .then(function(){
-        status.textContent = 'Imported.';
-        status.className = 'status ok';
-        loadPoems();
+        status.textContent = 'Imported.'; status.className = 'status ok';
+        loadMyPoems();
+        if(userIsAdmin) loadAllPoemsAdmin();
       })
-      .catch(function(err){
-        status.textContent = 'Import failed: ' + err.message;
-        status.className = 'status error';
-      });
+      .catch(function(err){ status.textContent = 'Import failed: ' + err.message; status.className = 'status error'; });
   });
 
   document.getElementById('addBtn').addEventListener('click', function(){
@@ -445,36 +451,23 @@
     var sign = document.getElementById('pSign').value.trim() || '— A.B.';
     var status = document.getElementById('addStatus');
 
-    if(!title || !bodyLines.length){
-      status.textContent = 'Title and at least one line are required.';
-      status.className = 'status error';
-      return;
-    }
+    if(!title || !bodyLines.length){ status.textContent = 'Title and at least one line are required.'; status.className = 'status error'; return; }
 
-    status.textContent = 'Saving…';
-    status.className = 'status';
-
+    status.textContent = 'Saving…'; status.className = 'status';
     fetch(API_BASE + '/poems', {
-      method: 'POST',
-      headers: authHeaders(),
+      method: 'POST', headers: authHeaders(),
       body: JSON.stringify({ date: date, title: title, body: bodyLines, sign: sign })
     })
-      .then(function(r){
-        if(!r.ok) throw new Error('Save failed with status ' + r.status);
-        return r.json();
-      })
+      .then(function(r){ if(!r.ok) throw new Error('Save failed with status ' + r.status); return r.json(); })
       .then(function(){
-        status.textContent = 'Poem added.';
-        status.className = 'status ok';
+        status.textContent = 'Poem added.'; status.className = 'status ok';
         document.getElementById('pDate').value = '';
         document.getElementById('pTitle').value = '';
         document.getElementById('pBody').value = '';
-        loadPoems();
+        loadMyPoems();
+        if(userIsAdmin) loadAllPoemsAdmin();
       })
-      .catch(function(err){
-        status.textContent = err.message;
-        status.className = 'status error';
-      });
+      .catch(function(err){ status.textContent = err.message; status.className = 'status error'; });
   });
 })();
 </script>

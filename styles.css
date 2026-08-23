@@ -104,23 +104,15 @@ a{ color:inherit; }
   position:relative;
   z-index:1;
   max-width:900px;
-  background:rgba(255,255,255,0.28);
-  backdrop-filter:blur(18px) saturate(160%);
-  -webkit-backdrop-filter:blur(18px) saturate(160%);
-  border-radius:24px;
-  border:1px solid rgba(255,255,255,0.45);
-  padding:2rem 2.4rem;
-  box-shadow:
-    0 20px 50px rgba(22,21,29,0.12),
-    inset 0 1px 0 rgba(255,255,255,0.5);
 }
 
 .kicker{
   font-family:var(--mono);
   font-size:0.75rem;
   letter-spacing:0.16em;
-  color:var(--ink-soft);
+  color:var(--ink);
   margin-bottom:1.6rem;
+  text-shadow:0 1px 0 rgba(255,255,255,0.9), 0 0 18px rgba(255,255,255,0.9), 0 0 4px rgba(255,255,255,0.95);
 }
 
 .hero-title{
@@ -129,6 +121,7 @@ a{ color:inherit; }
   line-height:1.02;
   letter-spacing:-0.02em;
   color:var(--ink);
+  text-shadow:0 2px 0 rgba(255,255,255,0.85), 0 0 30px rgba(255,255,255,0.85), 0 0 8px rgba(255,255,255,0.9);
 }
 
 .grad-text{
@@ -142,16 +135,28 @@ a{ color:inherit; }
   font-family:var(--serif);
   font-style:italic;
   font-size:clamp(1.05rem, 2vw, 1.35rem);
-  color:var(--ink-soft);
+  color:var(--ink);
   margin-top:1.6rem;
   max-width:38ch;
+  text-shadow:0 1px 0 rgba(255,255,255,0.85), 0 0 20px rgba(255,255,255,0.85), 0 0 5px rgba(255,255,255,0.9);
 }
 
-/* ---- segmented pill nav ---- */
+/* ---- sticky section nav ---- */
 .segnav{
+  position:sticky;
+  top:0;
+  z-index:40;
+  display:flex;
+  justify-content:center;
+  padding:1rem 6vw;
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(16px) saturate(160%);
+  -webkit-backdrop-filter:blur(16px) saturate(160%);
+  border-bottom:1px solid var(--line);
+}
+
+.segnav-inner{
   position:relative;
-  z-index:1;
-  margin-top:6vh;
   display:inline-flex;
   gap:0.3rem;
   background:var(--surface);
@@ -758,7 +763,7 @@ a{ color:inherit; }
   .diary-entry{ transform:none; }
   .spec{ flex:1 1 130px; padding:1.1rem 1.2rem; }
   .spec dt{ font-size:1.7rem; }
-  .segnav{ flex-wrap:wrap; }
+  .segnav-inner{ flex-wrap:wrap; }
   .footer-grid{ grid-template-columns:1fr; gap:2rem; }
   .footer-col, .footer-col-tight, .footer-col-suggest{ border-left:none; border-top:1px solid var(--line); padding:1.6rem 0 0; }
   .footer-col:first-child{ border-top:none; padding-top:0; }

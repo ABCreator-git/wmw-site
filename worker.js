@@ -1,19 +1,19 @@
 // ============================================================
 // Words and Music on Wheels — API (Cloudflare Worker)
-// Now with real accounts: email/password + Google Sign-In
+// Accounts with ownership: users can only edit/delete their own
+// poems. One admin email can see all users and manage any poem.
 // ============================================================
 // Setup in Cloudflare Dashboard for this Worker:
 //   1. Settings → Variables → KV Namespace Bindings
 //        Variable name: POEMS_KV   →  Namespace: wmw_poems
-//   2. Settings → Variables → Environment Variables (Secrets, encrypted)
+//   2. Settings → Variables → Environment Variables (Secret, encrypted)
 //        AUTH_SECRET      → a long random string (signs session tokens)
-//   3. Settings → Variables → Environment Variables (plain text is fine)
+//   3. Settings → Variables → Environment Variables (plain text)
 //        GOOGLE_CLIENT_ID → your Google OAuth Web Client ID
-//        (from Google Cloud Console → APIs & Services → Credentials →
-//         Create Credentials → OAuth client ID → Web application →
-//         Authorized JavaScript origin: https://ashishbhagat.com)
-//   4. Deploy, then send the Worker URL + GOOGLE_CLIENT_ID back so the
-//      site's login page can be wired up to match.
+//        ADMIN_EMAIL      → your own email (e.g. ash.bhagat0511@gmail.com)
+//        This is the ONLY account that can see all users / manage
+//        any poem. Everyone else only sees and controls their own.
+//   4. Deploy.
 // ============================================================
 
 const ALLOWED_ORIGIN = "https://ashishbhagat.com";
@@ -26,7 +26,6 @@ function corsHeaders() {
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
   };
 }
-
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
@@ -49,12 +48,8 @@ function b64urlToBuf(str) {
   for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
   return bytes.buffer;
 }
-function strToB64url(str) {
-  return bufToB64url(new TextEncoder().encode(str));
-}
-function b64urlToStr(str) {
-  return new TextDecoder().decode(b64urlToBuf(str));
-}
+function strToB64url(str) { return bufToB64url(new TextEncoder().encode(str)); }
+function b64urlToStr(str) { return new TextDecoder().decode(b64urlToBuf(str)); }
 
 // ---------- password hashing (PBKDF2) ----------
 async function hashPassword(password, saltB64) {
@@ -72,7 +67,7 @@ async function verifyPassword(password, saltB64, expectedHashB64) {
   return diff === 0;
 }
 
-// ---------- session tokens (HMAC-signed) ----------
+// ---------- session tokens ----------
 async function hmacSign(data, secret) {
   const enc = new TextEncoder();
   const key = await crypto.subtle.importKey("raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
@@ -96,9 +91,7 @@ async function verifySessionToken(token, env) {
     const payload = JSON.parse(b64urlToStr(payloadB64));
     if (!payload.exp || payload.exp < Date.now()) return null;
     return payload.email;
-  } catch (e) {
-    return null;
-  }
+  } catch (e) { return null; }
 }
 
 // ---------- Google ID token verification ----------
@@ -109,9 +102,7 @@ async function verifyGoogleIdToken(idToken, env) {
   const payload = JSON.parse(b64urlToStr(parts[1]));
 
   if (payload.aud !== env.GOOGLE_CLIENT_ID) throw new Error("Wrong audience");
-  if (payload.iss !== "accounts.google.com" && payload.iss !== "https://accounts.google.com") {
-    throw new Error("Wrong issuer");
-  }
+  if (payload.iss !== "accounts.google.com" && payload.iss !== "https://accounts.google.com") throw new Error("Wrong issuer");
   if (!payload.exp || payload.exp * 1000 < Date.now()) throw new Error("Token expired");
 
   const certsRes = await fetch("https://www.googleapis.com/oauth2/v3/certs");
@@ -119,16 +110,13 @@ async function verifyGoogleIdToken(idToken, env) {
   const jwk = certs.keys.find((k) => k.kid === header.kid);
   if (!jwk) throw new Error("Signing key not found");
 
-  const key = await crypto.subtle.importKey(
-    "jwk", jwk, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["verify"]
-  );
+  const key = await crypto.subtle.importKey("jwk", jwk, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["verify"]);
   const signedData = new TextEncoder().encode(parts[0] + "." + parts[1]);
   const signature = b64urlToBuf(parts[2]);
   const valid = await crypto.subtle.verify("RSASSA-PKCS1-v1_5", key, signature, signedData);
   if (!valid) throw new Error("Invalid signature");
-
   if (!payload.email) throw new Error("No email in token");
-  return payload.email;
+  return { email: payload.email, name: payload.name || "" };
 }
 
 // ---------- user storage ----------
@@ -138,6 +126,14 @@ async function getUser(env, email) {
 }
 async function saveUser(env, user) {
   await env.POEMS_KV.put("user:" + user.email.toLowerCase(), JSON.stringify(user));
+}
+async function listUsers(env) {
+  const list = await env.POEMS_KV.list({ prefix: "user:" });
+  const users = await Promise.all(
+    list.keys.map((k) => env.POEMS_KV.get(k.name).then((raw) => JSON.parse(raw)))
+  );
+  // never expose password hashes/salts, even to the admin
+  return users.map((u) => ({ email: u.email, name: u.name || "", provider: u.provider, createdAt: u.createdAt }));
 }
 
 // ---------- poems storage ----------
@@ -154,82 +150,81 @@ async function requireSession(request, env) {
   const token = auth.replace(/^Bearer\s+/i, "").trim();
   return await verifySessionToken(token, env);
 }
+function isAdmin(email, env) {
+  return !!email && !!env.ADMIN_EMAIL && email.toLowerCase() === env.ADMIN_EMAIL.toLowerCase();
+}
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const method = request.method;
 
-    if (method === "OPTIONS") {
-      return new Response(null, { headers: corsHeaders() });
-    }
+    if (method === "OPTIONS") return new Response(null, { headers: corsHeaders() });
 
-    // ---------- AUTH ROUTES ----------
+    // ---------- AUTH ----------
     if (method === "POST" && url.pathname === "/auth/signup") {
       const body = await request.json().catch(() => null);
       if (!body || !body.email || !body.password) return json({ error: "Email and password required" }, 400);
       const email = String(body.email).trim().toLowerCase();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ error: "Invalid email" }, 400);
       if (String(body.password).length < 8) return json({ error: "Password must be at least 8 characters" }, 400);
+      const name = String(body.name || "").trim().slice(0, 80);
 
-      const existing = await getUser(env, email);
-      if (existing) return json({ error: "An account with this email already exists" }, 409);
+      if (await getUser(env, email)) return json({ error: "An account with this email already exists" }, 409);
 
       const { hash, salt } = await hashPassword(body.password);
-      await saveUser(env, { email, hash, salt, provider: "password", createdAt: Date.now() });
+      await saveUser(env, { email, name, hash, salt, provider: "password", createdAt: Date.now() });
       const token = await createSessionToken(email, env);
-      return json({ token, email }, 201);
+      return json({ token, email, name, isAdmin: isAdmin(email, env) }, 201);
     }
 
     if (method === "POST" && url.pathname === "/auth/login") {
       const body = await request.json().catch(() => null);
       if (!body || !body.email || !body.password) return json({ error: "Email and password required" }, 400);
       const email = String(body.email).trim().toLowerCase();
-
       const user = await getUser(env, email);
       if (!user || user.provider !== "password") return json({ error: "Invalid email or password" }, 401);
-
-      const ok = await verifyPassword(body.password, user.salt, user.hash);
-      if (!ok) return json({ error: "Invalid email or password" }, 401);
-
+      if (!(await verifyPassword(body.password, user.salt, user.hash))) return json({ error: "Invalid email or password" }, 401);
       const token = await createSessionToken(email, env);
-      return json({ token, email });
+      return json({ token, email, name: user.name || "", isAdmin: isAdmin(email, env) });
     }
 
     if (method === "POST" && url.pathname === "/auth/google") {
       const body = await request.json().catch(() => null);
       if (!body || !body.credential) return json({ error: "Missing credential" }, 400);
       try {
-        const email = await verifyGoogleIdToken(body.credential, env);
+        const { email, name } = await verifyGoogleIdToken(body.credential, env);
         let user = await getUser(env, email);
         if (!user) {
-          user = { email, provider: "google", createdAt: Date.now() };
+          user = { email, name: name || "", provider: "google", createdAt: Date.now() };
           await saveUser(env, user);
         }
         const token = await createSessionToken(email, env);
-        return json({ token, email });
+        return json({ token, email, name: user.name || "", isAdmin: isAdmin(email, env) });
       } catch (e) {
         return json({ error: "Google sign-in failed: " + e.message }, 401);
       }
     }
 
-    // ---------- POEM ROUTES ----------
+    // ---------- PUBLIC POEMS FEED ----------
     if (method === "GET" && url.pathname === "/poems") {
-      const poems = await getPoems(env);
-      return json(poems);
+      return json(await getPoems(env));
     }
 
     // Everything below requires a logged-in session
     const sessionEmail = await requireSession(request, env);
-    if (!sessionEmail) {
-      return json({ error: "Unauthorized" }, 401);
+    if (!sessionEmail) return json({ error: "Unauthorized" }, 401);
+    const admin = isAdmin(sessionEmail, env);
+
+    // ---------- "MY POEMS" (own posts only) ----------
+    if (method === "GET" && url.pathname === "/poems/mine") {
+      const poems = await getPoems(env);
+      return json(poems.filter((p) => (p.author || "").toLowerCase() === sessionEmail.toLowerCase()));
     }
 
     if (method === "POST" && url.pathname === "/poems") {
       const body = await request.json().catch(() => null);
-      if (!body || !body.title || !Array.isArray(body.body)) {
-        return json({ error: "Missing title or body lines" }, 400);
-      }
+      if (!body || !body.title || !Array.isArray(body.body)) return json({ error: "Missing title or body lines" }, 400);
       const poems = await getPoems(env);
       const newPoem = {
         id: crypto.randomUUID(),
@@ -251,7 +246,10 @@ export default {
       const poems = await getPoems(env);
       const idx = poems.findIndex((p) => p.id === id);
       if (idx === -1) return json({ error: "Not found" }, 404);
-      poems[idx] = { ...poems[idx], ...body, id };
+      if (!admin && (poems[idx].author || "").toLowerCase() !== sessionEmail.toLowerCase()) {
+        return json({ error: "You can only edit your own poems" }, 403);
+      }
+      poems[idx] = { ...poems[idx], ...body, id, author: poems[idx].author };
       await savePoems(env, poems);
       return json(poems[idx]);
     }
@@ -259,10 +257,23 @@ export default {
     if (method === "DELETE" && url.pathname.startsWith("/poems/")) {
       const id = url.pathname.split("/poems/")[1];
       const poems = await getPoems(env);
+      const target = poems.find((p) => p.id === id);
+      if (!target) return json({ error: "Not found" }, 404);
+      if (!admin && (target.author || "").toLowerCase() !== sessionEmail.toLowerCase()) {
+        return json({ error: "You can only delete your own poems" }, 403);
+      }
       const next = poems.filter((p) => p.id !== id);
-      if (next.length === poems.length) return json({ error: "Not found" }, 404);
       await savePoems(env, next);
       return json({ deleted: id });
+    }
+
+    // ---------- ADMIN ONLY ----------
+    if (method === "GET" && url.pathname === "/admin/users") {
+      if (!admin) return json({ error: "Forbidden" }, 403);
+      return json(await listUsers(env));
+    }
+    if (method === "GET" && url.pathname === "/admin/check") {
+      return json({ isAdmin: admin });
     }
 
     return json({ error: "Not found" }, 404);
