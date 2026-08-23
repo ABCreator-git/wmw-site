@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Literata:ital,wght@0,400;0,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   .admin-wrap{ position:relative; z-index:1; max-width:760px; margin:0 auto; padding:6vh 6vw 10vh; }
   .admin-wrap h1{ font-size:2rem; font-weight:800; margin-bottom:0.4rem; color:var(--ink); }
@@ -18,10 +19,21 @@
     background:rgba(255,255,255,0.86);
     backdrop-filter:blur(14px) saturate(160%);
     -webkit-backdrop-filter:blur(14px) saturate(160%);
-    border:1px solid var(--line); border-radius:18px; padding:1.8rem 2rem; margin-bottom:2rem;
+    border:1px solid var(--line); border-radius:18px;
     box-shadow:0 14px 34px rgba(22,21,29,0.1);
   }
-  .field{ display:flex; flex-direction:column; gap:0.4rem; margin-bottom:1.1rem; }
+  .panel{ padding:1.8rem 2rem; margin-bottom:2rem; }
+
+  .auth-columns{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+  }
+  .auth-col{ padding:1.9rem 2rem; }
+  .auth-col + .auth-col{ border-left:1px solid var(--line); }
+  .auth-col h2{ font-size:1.1rem; font-weight:800; margin-bottom:1.2rem; color:var(--ink); }
+
+  .field{ display:flex; flex-direction:column; gap:0.4rem; margin-bottom:1rem; }
   .field label{ font-family:var(--mono); font-size:0.72rem; letter-spacing:0.05em; color:var(--ink-soft); }
   .field input, .field textarea{
     font-family:var(--serif); font-size:0.98rem; color:var(--ink);
@@ -32,14 +44,24 @@
   .btn{
     background:var(--indigo); color:#fff; border:none; border-radius:999px;
     padding:0.65rem 1.5rem; font-family:var(--display); font-weight:700;
-    font-size:0.9rem; cursor:pointer; transition:opacity 0.2s ease;
+    font-size:0.9rem; cursor:pointer; transition:opacity 0.2s ease; width:100%;
   }
   .btn:hover{ opacity:0.88; }
   .btn.danger{ background:var(--coral); }
-  .btn.ghost{ background:none; border:1px solid var(--line); color:var(--ink-soft); }
+  .btn.ghost{ background:none; border:1px solid var(--line); color:var(--ink-soft); width:auto; }
   .status{ font-family:var(--mono); font-size:0.8rem; margin-top:0.8rem; min-height:1.2em; }
   .status.error{ color:var(--coral); }
   .status.ok{ color:var(--teal); }
+
+  .divider{
+    display:flex; align-items:center; gap:0.8rem;
+    margin:1.4rem 0 1.2rem;
+    font-family:var(--mono); font-size:0.7rem; color:var(--ink-soft);
+  }
+  .divider::before, .divider::after{ content:""; flex:1; height:1px; background:var(--line); }
+
+  .google-btn-wrap{ display:flex; justify-content:center; }
+
   .entry-list{ display:flex; flex-direction:column; gap:1rem; }
   .entry-row{
     background:rgba(255,255,255,0.6); border:1px solid var(--line); border-radius:14px;
@@ -48,10 +70,20 @@
   .entry-row .meta{ font-family:var(--mono); font-size:0.72rem; color:var(--ink-soft); margin-bottom:0.2rem; }
   .entry-row h3{ font-size:1.05rem; font-weight:700; margin-bottom:0.3rem; }
   .entry-row .actions{ display:flex; gap:0.5rem; flex-shrink:0; }
-  .entry-row .actions button{ font-size:0.78rem; padding:0.4rem 0.9rem; }
-  #configBar{ display:flex; gap:0.8rem; flex-wrap:wrap; align-items:flex-end; margin-bottom:1.4rem; }
-  #configBar .field{ margin-bottom:0; flex:1 1 220px; }
+  .entry-row .actions button{ font-size:0.78rem; padding:0.4rem 0.9rem; width:auto; }
+
+  .session-bar{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:1.6rem; font-family:var(--mono); font-size:0.8rem; color:var(--ink-soft);
+  }
+  .session-bar button{ width:auto; padding:0.45rem 1.1rem; font-size:0.8rem; }
+
   [hidden]{ display:none !important; }
+
+  @media (max-width:640px){
+    .auth-columns{ grid-template-columns:1fr; }
+    .auth-col + .auth-col{ border-left:none; border-top:1px solid var(--line); }
+  }
 </style>
 </head>
 <body>
@@ -59,23 +91,55 @@
 
 <div class="admin-wrap">
   <h1>Your Workspace</h1>
-  <p class="sub">Login below to post, edit, and manage your poems</p>
+  <p class="sub">Login or create an account to post, edit, and manage poems</p>
 
-  <div class="gate" id="configBar">
-    <div class="field">
-      <label for="apiBase">Worker API URL</label>
-      <input type="text" id="apiBase" placeholder="https://wmw-poems-api.yoursubdomain.workers.dev">
+  <div class="gate" id="authGate">
+    <div class="auth-columns">
+      <div class="auth-col">
+        <h2>Login</h2>
+        <div class="field">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="you@gmail.com">
+        </div>
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="Your password">
+        </div>
+        <button class="btn" id="loginBtn">Login</button>
+        <p class="status" id="loginStatus"></p>
+
+        <div class="divider">or</div>
+        <div class="google-btn-wrap">
+          <div id="googleBtn"></div>
+        </div>
+      </div>
+
+      <div class="auth-col">
+        <h2>Sign up</h2>
+        <div class="field">
+          <label for="signupEmail">Email</label>
+          <input type="email" id="signupEmail" placeholder="you@gmail.com">
+        </div>
+        <div class="field">
+          <label for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" placeholder="At least 8 characters">
+        </div>
+        <div class="field">
+          <label for="signupPassword2">Confirm password</label>
+          <input type="password" id="signupPassword2" placeholder="Repeat password">
+        </div>
+        <button class="btn" id="signupBtn">Create account</button>
+        <p class="status" id="signupStatus"></p>
+      </div>
     </div>
-    <div class="field">
-      <label for="token">Login token</label>
-      <input type="password" id="token" placeholder="your private token">
-    </div>
-    <button class="btn" id="connectBtn">Login</button>
   </div>
 
-  <p class="status" id="connectStatus"></p>
-
   <div id="app" hidden>
+    <div class="session-bar">
+      <span id="sessionEmail"></span>
+      <button class="btn ghost" id="logoutBtn">Log out</button>
+    </div>
+
     <div class="panel">
       <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:0.6rem;">First time setup</h2>
       <p style="font-family:var(--serif); font-size:0.92rem; color:var(--ink-soft); margin-bottom:1rem;">
@@ -104,7 +168,7 @@
         <label for="pSign">Sign-off</label>
         <input type="text" id="pSign" value="— A.B.">
       </div>
-      <button class="btn" id="addBtn">Add poem</button>
+      <button class="btn" id="addBtn" style="width:auto;">Add poem</button>
       <p class="status" id="addStatus"></p>
     </div>
 
@@ -117,24 +181,42 @@
 
 <script>
 (function(){
-  var apiBaseInput = document.getElementById('apiBase');
-  var tokenInput = document.getElementById('token');
-  var connectBtn = document.getElementById('connectBtn');
-  var connectStatus = document.getElementById('connectStatus');
+  // ---- Fixed config: no API URL or token entry for the user ----
+  var API_BASE = "https://wmw-poems-api.ash-bhagat0511.workers.dev";
+  var GOOGLE_CLIENT_ID = "236184694606-giqg94l88p9u8l5ocvkvpla6g1ugvphi.apps.googleusercontent.com";
+
+  var authGate = document.getElementById('authGate');
   var app = document.getElementById('app');
-  var entryList = document.getElementById('entryList');
-  var addBtn = document.getElementById('addBtn');
-  var addStatus = document.getElementById('addStatus');
-  var seedBtn = document.getElementById('seedBtn');
-  var seedStatus = document.getElementById('seedStatus');
+  var sessionEmailEl = document.getElementById('sessionEmail');
 
-  var apiBase = '';
-  var token = '';
+  var token = null;
+  var userEmail = null;
 
-  try {
-    apiBaseInput.value = sessionStorage.getItem('wmw_api_base') || '';
-    tokenInput.value = sessionStorage.getItem('wmw_admin_token') || '';
-  } catch(e){}
+  function saveSession(t, email){
+    token = t; userEmail = email;
+    try {
+      localStorage.setItem('wmw_session', JSON.stringify({ token: t, email: email }));
+    } catch(e){}
+    enterApp();
+  }
+
+  function clearSession(){
+    token = null; userEmail = null;
+    try { localStorage.removeItem('wmw_session'); } catch(e){}
+    app.hidden = true;
+    authGate.hidden = false;
+  }
+
+  function enterApp(){
+    authGate.hidden = true;
+    app.hidden = false;
+    sessionEmailEl.textContent = 'Logged in as ' + userEmail;
+    loadPoems();
+  }
+
+  function authHeaders(){
+    return { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+  }
 
   function escapeHtml(s){
     return String(s).replace(/[&<>"']/g, function(c){
@@ -142,13 +224,126 @@
     });
   }
 
-  function authHeaders(){
-    return { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
-  }
+  // ---- Restore existing session ----
+  try {
+    var saved = JSON.parse(localStorage.getItem('wmw_session') || 'null');
+    if(saved && saved.token && saved.email){
+      token = saved.token; userEmail = saved.email;
+      enterApp();
+    }
+  } catch(e){}
 
+  document.getElementById('logoutBtn').addEventListener('click', clearSession);
+
+  // ---- Email/password login ----
+  document.getElementById('loginBtn').addEventListener('click', function(){
+    var email = document.getElementById('loginEmail').value.trim();
+    var password = document.getElementById('loginPassword').value;
+    var status = document.getElementById('loginStatus');
+    if(!email || !password){
+      status.textContent = 'Enter your email and password.';
+      status.className = 'status error';
+      return;
+    }
+    status.textContent = 'Logging in…';
+    status.className = 'status';
+    fetch(API_BASE + '/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: password })
+    })
+      .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, data: d }; }); })
+      .then(function(res){
+        if(!res.ok) throw new Error(res.data.error || 'Login failed');
+        status.textContent = '';
+        saveSession(res.data.token, res.data.email);
+      })
+      .catch(function(err){
+        status.textContent = err.message;
+        status.className = 'status error';
+      });
+  });
+
+  // ---- Email/password signup ----
+  document.getElementById('signupBtn').addEventListener('click', function(){
+    var email = document.getElementById('signupEmail').value.trim();
+    var password = document.getElementById('signupPassword').value;
+    var password2 = document.getElementById('signupPassword2').value;
+    var status = document.getElementById('signupStatus');
+
+    if(!email || !password){
+      status.textContent = 'Enter an email and password.';
+      status.className = 'status error';
+      return;
+    }
+    if(password.length < 8){
+      status.textContent = 'Password must be at least 8 characters.';
+      status.className = 'status error';
+      return;
+    }
+    if(password !== password2){
+      status.textContent = 'Passwords do not match.';
+      status.className = 'status error';
+      return;
+    }
+
+    status.textContent = 'Creating account…';
+    status.className = 'status';
+    fetch(API_BASE + '/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: password })
+    })
+      .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, data: d }; }); })
+      .then(function(res){
+        if(!res.ok) throw new Error(res.data.error || 'Sign up failed');
+        status.textContent = '';
+        saveSession(res.data.token, res.data.email);
+      })
+      .catch(function(err){
+        status.textContent = err.message;
+        status.className = 'status error';
+      });
+  });
+
+  // ---- Google Sign-In ----
+  function handleGoogleCredential(response){
+    fetch(API_BASE + '/auth/google', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ credential: response.credential })
+    })
+      .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, data: d }; }); })
+      .then(function(res){
+        if(!res.ok) throw new Error(res.data.error || 'Google sign-in failed');
+        saveSession(res.data.token, res.data.email);
+      })
+      .catch(function(err){
+        var status = document.getElementById('loginStatus');
+        status.textContent = err.message;
+        status.className = 'status error';
+      });
+  }
+  window.handleGoogleCredential = handleGoogleCredential;
+
+  window.addEventListener('load', function(){
+    if(window.google && google.accounts && google.accounts.id && GOOGLE_CLIENT_ID.indexOf('YOUR_') !== 0){
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredential
+      });
+      google.accounts.id.renderButton(
+        document.getElementById('googleBtn'),
+        { theme: 'outline', size: 'large', width: 260 }
+      );
+    }
+  });
+
+  // ---- Poem management (same as before, now using session token) ----
   function loadPoems(){
+    var entryList = document.getElementById('entryList');
     entryList.innerHTML = '<p class="status">Loading…</p>';
-    fetch(apiBase + '/poems')
+    fetch(API_BASE + '/poems')
       .then(function(r){ return r.json(); })
       .then(function(poems){
         if(!poems.length){
@@ -161,7 +356,7 @@
           row.className = 'entry-row';
           row.innerHTML =
             '<div>' +
-              '<div class="meta">' + escapeHtml(poem.date || '') + '</div>' +
+              '<div class="meta">' + escapeHtml(poem.date || '') + (poem.author ? ' · ' + escapeHtml(poem.author) : '') + '</div>' +
               '<h3>' + escapeHtml(poem.title) + '</h3>' +
               '<div style="font-size:0.85rem; color:var(--ink-soft); white-space:pre-line;">' +
                 escapeHtml(poem.body.join('\n')) +
@@ -178,19 +373,20 @@
       });
   }
 
-  entryList.addEventListener('click', function(e){
+  document.getElementById('entryList').addEventListener('click', function(e){
     var btn = e.target.closest('button[data-action="delete"]');
     if(!btn) return;
     if(!confirm('Delete this poem? This cannot be undone.')) return;
-    fetch(apiBase + '/poems/' + btn.dataset.id, { method:'DELETE', headers: authHeaders() })
+    fetch(API_BASE + '/poems/' + btn.dataset.id, { method:'DELETE', headers: authHeaders() })
       .then(function(r){ return r.json(); })
       .then(function(){ loadPoems(); })
       .catch(function(err){ alert('Delete failed: ' + err.message); });
   });
 
-  seedBtn.addEventListener('click', function(){
-    seedStatus.textContent = 'Importing…';
-    seedStatus.className = 'status';
+  document.getElementById('seedBtn').addEventListener('click', function(){
+    var status = document.getElementById('seedStatus');
+    status.textContent = 'Importing…';
+    status.className = 'status';
     fetch('poems.json')
       .then(function(r){
         if(!r.ok) throw new Error('poems.json not found at this path (status ' + r.status + ')');
@@ -200,7 +396,7 @@
         var chain = Promise.resolve();
         poems.forEach(function(poem){
           chain = chain.then(function(){
-            return fetch(apiBase + '/poems', {
+            return fetch(API_BASE + '/poems', {
               method: 'POST',
               headers: authHeaders(),
               body: JSON.stringify(poem)
@@ -210,65 +406,33 @@
         return chain;
       })
       .then(function(){
-        seedStatus.textContent = 'Imported.';
-        seedStatus.className = 'status ok';
+        status.textContent = 'Imported.';
+        status.className = 'status ok';
         loadPoems();
       })
       .catch(function(err){
-        seedStatus.textContent = 'Import failed: ' + err.message;
-        seedStatus.className = 'status error';
+        status.textContent = 'Import failed: ' + err.message;
+        status.className = 'status error';
       });
   });
 
-  connectBtn.addEventListener('click', function(){
-    apiBase = apiBaseInput.value.trim().replace(/\/$/, '');
-    token = tokenInput.value.trim();
-    if(!apiBase || !token){
-      connectStatus.textContent = 'Enter both the Worker URL and your login token.';
-      connectStatus.className = 'status error';
-      return;
-    }
-    try {
-      sessionStorage.setItem('wmw_api_base', apiBase);
-      sessionStorage.setItem('wmw_admin_token', token);
-    } catch(e){}
-
-    connectStatus.textContent = 'Connecting…';
-    connectStatus.className = 'status';
-
-    fetch(apiBase + '/poems')
-      .then(function(r){
-        if(!r.ok) throw new Error('API responded with ' + r.status);
-        return r.json();
-      })
-      .then(function(){
-        connectStatus.textContent = 'Logged in.';
-        connectStatus.className = 'status ok';
-        app.hidden = false;
-        loadPoems();
-      })
-      .catch(function(err){
-        connectStatus.textContent = 'Could not log in: ' + err.message;
-        connectStatus.className = 'status error';
-      });
-  });
-
-  addBtn.addEventListener('click', function(){
+  document.getElementById('addBtn').addEventListener('click', function(){
     var date = document.getElementById('pDate').value.trim();
     var title = document.getElementById('pTitle').value.trim();
     var bodyLines = document.getElementById('pBody').value.split('\n').map(function(l){ return l.trim(); }).filter(Boolean);
     var sign = document.getElementById('pSign').value.trim() || '— A.B.';
+    var status = document.getElementById('addStatus');
 
     if(!title || !bodyLines.length){
-      addStatus.textContent = 'Title and at least one line are required.';
-      addStatus.className = 'status error';
+      status.textContent = 'Title and at least one line are required.';
+      status.className = 'status error';
       return;
     }
 
-    addStatus.textContent = 'Saving…';
-    addStatus.className = 'status';
+    status.textContent = 'Saving…';
+    status.className = 'status';
 
-    fetch(apiBase + '/poems', {
+    fetch(API_BASE + '/poems', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({ date: date, title: title, body: bodyLines, sign: sign })
@@ -278,22 +442,18 @@
         return r.json();
       })
       .then(function(){
-        addStatus.textContent = 'Poem added.';
-        addStatus.className = 'status ok';
+        status.textContent = 'Poem added.';
+        status.className = 'status ok';
         document.getElementById('pDate').value = '';
         document.getElementById('pTitle').value = '';
         document.getElementById('pBody').value = '';
         loadPoems();
       })
       .catch(function(err){
-        addStatus.textContent = err.message;
-        addStatus.className = 'status error';
+        status.textContent = err.message;
+        status.className = 'status error';
       });
   });
-
-  if(apiBaseInput.value && tokenInput.value){
-    connectBtn.click();
-  }
 })();
 </script>
 </body>
