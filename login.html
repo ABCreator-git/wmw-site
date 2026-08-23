@@ -13,8 +13,16 @@
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   .admin-wrap{ position:relative; z-index:1; max-width:760px; margin:0 auto; padding:6vh 6vw 10vh; }
+  .admin-header{
+    background:rgba(255,255,255,0.86);
+    backdrop-filter:blur(14px) saturate(160%);
+    -webkit-backdrop-filter:blur(14px) saturate(160%);
+    border:1px solid var(--line); border-radius:18px;
+    padding:1.6rem 2rem;
+    margin-bottom:2rem;
+  }
   .admin-wrap h1{ font-size:2rem; font-weight:800; margin-bottom:0.4rem; color:var(--ink); }
-  .admin-wrap .sub{ font-family:var(--mono); font-size:0.8rem; color:var(--ink-soft); margin-bottom:2.4rem; }
+  .admin-wrap .sub{ font-family:var(--mono); font-size:0.8rem; color:var(--ink-soft); }
   .gate, .panel{
     background:rgba(255,255,255,0.86);
     backdrop-filter:blur(14px) saturate(160%);
@@ -24,9 +32,12 @@
   }
   .panel{ padding:1.8rem 2rem; margin-bottom:2rem; }
 
+  .gate{ padding-bottom:0.4rem; }
+
   .auth-columns{
     display:grid;
     grid-template-columns:1fr 1fr;
+    align-items:start;
     gap:0;
   }
   .auth-col{ padding:1.9rem 2rem; }
@@ -53,13 +64,15 @@
   .status.error{ color:var(--coral); }
   .status.ok{ color:var(--teal); }
 
-  .divider{
-    display:flex; align-items:center; gap:0.8rem;
-    margin:1.4rem 0 1.2rem;
-    font-family:var(--mono); font-size:0.7rem; color:var(--ink-soft);
+  .google-section{
+    border-top:1px solid var(--line);
+    padding:1.6rem 2rem 1.8rem;
+    text-align:center;
   }
-  .divider::before, .divider::after{ content:""; flex:1; height:1px; background:var(--line); }
-
+  .divider{
+    font-family:var(--mono); font-size:0.7rem; color:var(--ink-soft);
+    margin-bottom:1.1rem;
+  }
   .google-btn-wrap{ display:flex; justify-content:center; }
 
   .entry-list{ display:flex; flex-direction:column; gap:1rem; }
@@ -75,6 +88,11 @@
   .session-bar{
     display:flex; justify-content:space-between; align-items:center;
     margin-bottom:1.6rem; font-family:var(--mono); font-size:0.8rem; color:var(--ink-soft);
+    background:rgba(255,255,255,0.86);
+    backdrop-filter:blur(14px) saturate(160%);
+    -webkit-backdrop-filter:blur(14px) saturate(160%);
+    border:1px solid var(--line); border-radius:14px;
+    padding:0.9rem 1.3rem;
   }
   .session-bar button{ width:auto; padding:0.45rem 1.1rem; font-size:0.8rem; }
 
@@ -90,8 +108,10 @@
 <div class="page-bg" aria-hidden="true"></div>
 
 <div class="admin-wrap">
-  <h1>Your Workspace</h1>
-  <p class="sub">Login or create an account to post, edit, and manage poems</p>
+  <div class="admin-header">
+    <h1>Your Workspace</h1>
+    <p class="sub">Login or create an account to post, edit, and manage poems</p>
+  </div>
 
   <div class="gate" id="authGate">
     <div class="auth-columns">
@@ -107,11 +127,6 @@
         </div>
         <button class="btn" id="loginBtn">Login</button>
         <p class="status" id="loginStatus"></p>
-
-        <div class="divider">or</div>
-        <div class="google-btn-wrap">
-          <div id="googleBtn"></div>
-        </div>
       </div>
 
       <div class="auth-col">
@@ -130,6 +145,13 @@
         </div>
         <button class="btn" id="signupBtn">Create account</button>
         <p class="status" id="signupStatus"></p>
+      </div>
+    </div>
+
+    <div class="google-section">
+      <div class="divider">or continue with</div>
+      <div class="google-btn-wrap">
+        <div id="googleBtn"></div>
       </div>
     </div>
   </div>
