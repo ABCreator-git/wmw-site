@@ -560,26 +560,182 @@ a{ color:inherit; }
    FOOTER
    ============================================ */
 .site-footer{
-  background:rgba(250,250,247,0.5);
-  padding:3rem 6vw 4rem;
-  display:flex;
-  align-items:center;
-  gap:1rem;
+  background:rgba(255,255,255,0.72);
+  backdrop-filter:blur(16px) saturate(160%);
+  -webkit-backdrop-filter:blur(16px) saturate(160%);
   border-top:1px solid var(--line);
+  padding:4rem 6vw 2.4rem;
+}
+
+.footer-grid{
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr;
+  gap:0;
+  max-width:1100px;
+}
+
+.footer-col{
+  padding:0 2.2rem;
+  border-left:1px solid var(--line);
+}
+.footer-col:first-child{
+  padding-left:0;
+  border-left:none;
+}
+
+.footer-brand{
+  display:flex;
+  flex-direction:column;
+  gap:0.5rem;
 }
 
 .footer-dial{
-  width:14px; height:14px;
+  width:16px; height:16px;
   border-radius:50%;
   background:linear-gradient(135deg, var(--coral), var(--indigo), var(--teal));
-  flex-shrink:0;
+  margin-bottom:0.3rem;
 }
 
-.site-footer p{
+.footer-name{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:1.05rem;
+  color:var(--ink);
+}
+
+.footer-tagline{
   font-family:var(--mono);
   font-size:0.75rem;
-  letter-spacing:0.06em;
   color:var(--ink-soft);
+}
+
+.footer-col-title{
+  font-family:var(--mono);
+  font-size:0.7rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  margin-bottom:1rem;
+}
+
+.footer-nav{
+  display:flex;
+  flex-direction:column;
+  gap:0.7rem;
+}
+
+.footer-nav a,
+.footer-nav-btn{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:0.92rem;
+  color:var(--ink);
+  text-decoration:none;
+  background:none;
+  border:none;
+  padding:0;
+  text-align:left;
+  cursor:pointer;
+  width:fit-content;
+  transition:color 0.2s ease;
+}
+.footer-nav a:hover,
+.footer-nav-btn:hover{ color:var(--indigo); }
+
+.footer-admin-link{
+  display:inline-flex !important;
+  align-items:center;
+  gap:0.45rem;
+  margin-top:0.2rem;
+  padding:0.4rem 0.9rem !important;
+  border-radius:999px;
+  background:var(--indigo-soft);
+  color:var(--indigo) !important;
+  width:fit-content;
+}
+.footer-admin-link:hover{ background:var(--indigo); color:#fff !important; }
+
+.footer-copyright{
+  max-width:1100px;
+  margin-top:3rem;
+  padding-top:1.6rem;
+  border-top:1px solid var(--line);
+  font-family:var(--mono);
+  font-size:0.72rem;
+  color:var(--ink-soft);
+}
+
+.suggest-form{
+  max-width:420px;
+  margin-top:2.4rem;
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:1.6rem 1.7rem 1.8rem;
+  box-shadow:0 10px 26px rgba(22,21,29,0.06);
+}
+
+.suggest-form-title{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:1.02rem;
+  color:var(--ink);
+}
+
+.suggest-row{
+  display:flex;
+  flex-direction:column;
+  gap:0.4rem;
+}
+
+.suggest-label{
+  font-family:var(--mono);
+  font-size:0.7rem;
+  letter-spacing:0.05em;
+  color:var(--ink-soft);
+}
+
+.suggest-input,
+.suggest-textarea{
+  font-family:var(--serif);
+  font-size:0.92rem;
+  color:var(--ink);
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:0.6rem 0.8rem;
+  resize:vertical;
+}
+.suggest-input:focus,
+.suggest-textarea:focus{ outline:2px solid var(--indigo); outline-offset:1px; }
+
+.suggest-actions{
+  display:flex;
+  align-items:center;
+  gap:1rem;
+}
+
+.suggest-submit{
+  background:var(--indigo);
+  color:#fff;
+  border:none;
+  border-radius:999px;
+  padding:0.55rem 1.5rem;
+  font-family:var(--display);
+  font-weight:700;
+  font-size:0.88rem;
+  cursor:pointer;
+  transition:opacity 0.2s ease;
+}
+.suggest-submit:hover{ opacity:0.88; }
+
+.suggest-status{
+  font-family:var(--mono);
+  font-size:0.75rem;
+  color:var(--teal);
 }
 
 /* ============================================
@@ -594,6 +750,9 @@ a{ color:inherit; }
   .spec{ flex:1 1 130px; padding:1.1rem 1.2rem; }
   .spec dt{ font-size:1.7rem; }
   .segnav{ flex-wrap:wrap; }
+  .footer-grid{ grid-template-columns:1fr; gap:2rem; }
+  .footer-col{ border-left:none; border-top:1px solid var(--line); padding:1.6rem 0 0; }
+  .footer-col:first-child{ border-top:none; padding-top:0; }
 }
 /* ===== Additions for new hero background photo + name signature ===== */
 

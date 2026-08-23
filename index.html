@@ -184,29 +184,57 @@
 </main>
 
 <footer class="site-footer">
-  <div class="footer-main">
-    <div class="footer-dial" aria-hidden="true"></div>
-    <p>Words and Music on Wheels &middot; ashishbhagat.com</p>
-  </div>
+  <div class="footer-grid">
 
-  <div class="footer-links">
-    <a href="admin.html" class="footer-icon-link" title="Admin login" aria-label="Admin login">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-    </a>
-    <a href="privacy.html" class="footer-text-link">Privacy Policy</a>
-    <button type="button" class="footer-text-link footer-suggest-toggle" id="suggestToggle">Suggest something</button>
+    <div class="footer-col footer-brand">
+      <div class="footer-dial" aria-hidden="true"></div>
+      <p class="footer-name">Words and Music on Wheels</p>
+      <p class="footer-tagline">ashishbhagat.com</p>
+    </div>
+
+    <div class="footer-col">
+      <p class="footer-col-title">Explore</p>
+      <nav class="footer-nav">
+        <a href="#about">About</a>
+        <a href="#garage">Garage</a>
+        <a href="#poetry">Poetry</a>
+        <a href="#sound">Sound</a>
+      </nav>
+    </div>
+
+    <div class="footer-col">
+      <p class="footer-col-title">More</p>
+      <nav class="footer-nav">
+        <a href="privacy.html">Privacy Policy</a>
+        <button type="button" class="footer-nav-btn" id="suggestToggle">Suggest something</button>
+        <a href="admin.html" class="footer-admin-link">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          Admin
+        </a>
+      </nav>
+    </div>
+
   </div>
 
   <form id="suggestForm" class="suggest-form" action="https://api.web3forms.com/submit" method="POST" hidden>
     <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY_HERE">
     <input type="hidden" name="subject" value="New suggestion — Words and Music on Wheels">
-    <label class="suggest-label" for="suggestEmail">Your email (optional)</label>
-    <input type="email" id="suggestEmail" name="email" class="suggest-input" placeholder="you@example.com">
-    <label class="suggest-label" for="suggestMessage">Suggestion</label>
-    <textarea id="suggestMessage" name="message" class="suggest-textarea" rows="3" placeholder="A poem topic, a song to check out, feedback..." required></textarea>
-    <button type="submit" class="suggest-submit">Send</button>
-    <p class="suggest-status" id="suggestStatus" aria-live="polite"></p>
+    <p class="suggest-form-title">Suggest something</p>
+    <div class="suggest-row">
+      <label class="suggest-label" for="suggestEmail">Your email (optional)</label>
+      <input type="email" id="suggestEmail" name="email" class="suggest-input" placeholder="you@example.com">
+    </div>
+    <div class="suggest-row">
+      <label class="suggest-label" for="suggestMessage">Message</label>
+      <textarea id="suggestMessage" name="message" class="suggest-textarea" rows="3" placeholder="A poem topic, a song to check out, feedback..." required></textarea>
+    </div>
+    <div class="suggest-actions">
+      <button type="submit" class="suggest-submit">Send</button>
+      <p class="suggest-status" id="suggestStatus" aria-live="polite"></p>
+    </div>
   </form>
+
+  <p class="footer-copyright">&copy; 2026 Ashish Bhagat. All poems and writing are original.</p>
 </footer>
 
 <script src="script.js"></script>
