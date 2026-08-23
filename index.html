@@ -192,7 +192,7 @@
       <p class="footer-tagline">ashishbhagat.com</p>
     </div>
 
-    <div class="footer-col">
+    <div class="footer-col footer-col-tight">
       <p class="footer-col-title">Explore</p>
       <nav class="footer-nav">
         <a href="#about">About</a>
@@ -202,37 +202,39 @@
       </nav>
     </div>
 
-    <div class="footer-col">
+    <div class="footer-col footer-col-tight">
       <p class="footer-col-title">More</p>
       <nav class="footer-nav">
         <a href="privacy.html">Privacy Policy</a>
         <button type="button" class="footer-nav-btn" id="suggestToggle">Suggest something</button>
-        <a href="admin.html" class="footer-admin-link">
+        <a href="login.html" class="footer-admin-link">
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-          Admin
+          Login
         </a>
       </nav>
     </div>
 
-  </div>
+    <div class="footer-col footer-col-suggest">
+      <form id="suggestForm" class="suggest-form" action="https://api.web3forms.com/submit" method="POST" hidden>
+        <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY_HERE">
+        <input type="hidden" name="subject" value="New suggestion — Words and Music on Wheels">
+        <p class="suggest-form-title">Suggest something</p>
+        <div class="suggest-row">
+          <label class="suggest-label" for="suggestEmail">Your email (optional)</label>
+          <input type="email" id="suggestEmail" name="email" class="suggest-input" placeholder="you@example.com">
+        </div>
+        <div class="suggest-row">
+          <label class="suggest-label" for="suggestMessage">Message</label>
+          <textarea id="suggestMessage" name="message" class="suggest-textarea" rows="2" placeholder="A poem topic, a song to check out, feedback..." required></textarea>
+        </div>
+        <div class="suggest-actions">
+          <button type="submit" class="suggest-submit">Send</button>
+          <p class="suggest-status" id="suggestStatus" aria-live="polite"></p>
+        </div>
+      </form>
+    </div>
 
-  <form id="suggestForm" class="suggest-form" action="https://api.web3forms.com/submit" method="POST" hidden>
-    <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY_HERE">
-    <input type="hidden" name="subject" value="New suggestion — Words and Music on Wheels">
-    <p class="suggest-form-title">Suggest something</p>
-    <div class="suggest-row">
-      <label class="suggest-label" for="suggestEmail">Your email (optional)</label>
-      <input type="email" id="suggestEmail" name="email" class="suggest-input" placeholder="you@example.com">
-    </div>
-    <div class="suggest-row">
-      <label class="suggest-label" for="suggestMessage">Message</label>
-      <textarea id="suggestMessage" name="message" class="suggest-textarea" rows="3" placeholder="A poem topic, a song to check out, feedback..." required></textarea>
-    </div>
-    <div class="suggest-actions">
-      <button type="submit" class="suggest-submit">Send</button>
-      <p class="suggest-status" id="suggestStatus" aria-live="polite"></p>
-    </div>
-  </form>
+  </div>
 
   <p class="footer-copyright">&copy; 2026 Ashish Bhagat. All poems and writing are original.</p>
 </footer>

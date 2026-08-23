@@ -564,23 +564,30 @@ a{ color:inherit; }
   backdrop-filter:blur(16px) saturate(160%);
   -webkit-backdrop-filter:blur(16px) saturate(160%);
   border-top:1px solid var(--line);
-  padding:4rem 6vw 2.4rem;
+  padding:2.8rem 6vw 1.8rem;
 }
 
 .footer-grid{
   display:grid;
-  grid-template-columns:1.4fr 1fr 1fr;
+  grid-template-columns:1.1fr 0.7fr 0.7fr 1.3fr;
   gap:0;
-  max-width:1100px;
+  max-width:1200px;
+  align-items:start;
 }
 
 .footer-col{
-  padding:0 2.2rem;
+  padding:0 1.4rem;
   border-left:1px solid var(--line);
 }
 .footer-col:first-child{
   padding-left:0;
   border-left:none;
+}
+.footer-col-tight{
+  padding:0 1rem;
+}
+.footer-col-suggest{
+  padding-right:0;
 }
 
 .footer-brand{
@@ -666,15 +673,15 @@ a{ color:inherit; }
 }
 
 .suggest-form{
-  max-width:420px;
-  margin-top:2.4rem;
+  max-width:100%;
+  margin-top:0;
   display:flex;
   flex-direction:column;
-  gap:1rem;
+  gap:0.8rem;
   background:var(--surface);
   border:1px solid var(--line);
-  border-radius:18px;
-  padding:1.6rem 1.7rem 1.8rem;
+  border-radius:16px;
+  padding:1.3rem 1.4rem 1.4rem;
   box-shadow:0 10px 26px rgba(22,21,29,0.06);
 }
 
@@ -751,7 +758,7 @@ a{ color:inherit; }
   .spec dt{ font-size:1.7rem; }
   .segnav{ flex-wrap:wrap; }
   .footer-grid{ grid-template-columns:1fr; gap:2rem; }
-  .footer-col{ border-left:none; border-top:1px solid var(--line); padding:1.6rem 0 0; }
+  .footer-col, .footer-col-tight, .footer-col-suggest{ border-left:none; border-top:1px solid var(--line); padding:1.6rem 0 0; }
   .footer-col:first-child{ border-top:none; padding-top:0; }
 }
 /* ===== Additions for new hero background photo + name signature ===== */
