@@ -1,4 +1,16 @@
 (function(){
+  var toggle = document.getElementById('themeToggle');
+  if(toggle){
+    toggle.addEventListener('click', function(){
+      var current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      var next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try{ localStorage.setItem('wmw_theme', next); }catch(e){}
+    });
+  }
+})();
+
+(function(){
   var buttons = Array.prototype.slice.call(document.querySelectorAll(".segbtn"));
   var pill = document.getElementById("pill");
   var nav = document.querySelector(".segnav");
