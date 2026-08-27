@@ -163,6 +163,107 @@
       });
     });
 
+  // ---- Garage: Instagram-linked posts (no image hosting — pulled from Instagram itself) ----
+  function renderGarage(posts){
+    var grid = document.getElementById("garage-posts-grid");
+    if(!grid) return;
+    if(!posts || !posts.length){
+      grid.innerHTML = '<p class="station-note">Garage posts will appear here soon.</p>';
+      return;
+    }
+    grid.innerHTML = "";
+    posts.slice().reverse().forEach(function(post){
+      var art = document.createElement("article");
+      art.className = "plate-card garage-post-card";
+      var captionHtml = post.caption ? '<p>' + escapeHtml(post.caption) + "</p>" : "";
+      art.innerHTML =
+        '<blockquote class="instagram-media" data-instgrm-permalink="' + escapeHtml(post.instagramUrl) + '" data-instgrm-version="14" style="width:100%;"></blockquote>' +
+        captionHtml;
+      grid.appendChild(art);
+    });
+    // Instagram's embed.js scans the page once on load; ask it to re-scan
+    // now that we've injected new blockquotes after that initial pass.
+    if(window.instgrm && window.instgrm.Embeds){
+      window.instgrm.Embeds.process();
+    }
+  }
+
+  function loadGarageFromWorker(){
+    return fetch(WORKER_API_BASE + "/garage").then(function(r){
+      if(!r.ok) throw new Error("bad status");
+      return r.json();
+    });
+  }
+
+  if(WORKER_API_BASE){
+    loadGarageFromWorker()
+      .then(renderGarage)
+      .catch(function(){
+        var grid = document.getElementById("garage-posts-grid");
+        if(grid) grid.innerHTML = '<p class="station-note">Garage posts will appear here soon.</p>';
+      });
+  }
+
+  // ---- Music: YouTube-linked tracks, combined into one playlist ----
+  function renderMusic(tracks){
+    var list = document.getElementById("music-tracklist");
+    var playlistEmbed = document.getElementById("music-playlist-embed");
+    if(!list) return;
+
+    if(!tracks || !tracks.length){
+      list.innerHTML = '<li class="track"><p class="station-note">Playlist will appear here soon.</p></li>';
+      if(playlistEmbed) playlistEmbed.innerHTML = "";
+      return;
+    }
+
+    // Ad-hoc playlist trick: YouTube plays the first video ID, then
+    // continues through the `playlist` param — no real YouTube playlist
+    // needed, so anyone can add a track without owning the playlist.
+    if(playlistEmbed){
+      var ids = tracks.map(function(t){ return t.videoId; }).filter(Boolean);
+      if(ids.length){
+        var first = ids[0];
+        var rest = ids.slice(1).join(",");
+        var src = "https://www.youtube.com/embed/" + encodeURIComponent(first) +
+          (rest ? "?playlist=" + encodeURIComponent(rest) : "?playlist=" + encodeURIComponent(first));
+        playlistEmbed.innerHTML =
+          '<div class="music-player-wrap"><iframe width="100%" height="360" src="' + src + '" ' +
+          'title="Playlist" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
+      }
+    }
+
+    list.innerHTML = "";
+    tracks.slice().reverse().forEach(function(track, i){
+      var li = document.createElement("li");
+      li.className = "track";
+      var num = String(i + 1).padStart(2, "0");
+      li.innerHTML =
+        '<span class="track-no">' + num + '</span>' +
+        '<div class="track-body">' +
+          '<p class="track-title"><a href="' + escapeHtml(track.youtubeUrl) + '" target="_blank" rel="noopener">' + escapeHtml(track.title) + "</a></p>" +
+          (track.note ? '<p class="track-note">' + escapeHtml(track.note) + "</p>" : "") +
+        "</div>" +
+        '<span class="vu" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>';
+      list.appendChild(li);
+    });
+  }
+
+  function loadMusicFromWorker(){
+    return fetch(WORKER_API_BASE + "/music").then(function(r){
+      if(!r.ok) throw new Error("bad status");
+      return r.json();
+    });
+  }
+
+  if(WORKER_API_BASE){
+    loadMusicFromWorker()
+      .then(renderMusic)
+      .catch(function(){
+        var list = document.getElementById("music-tracklist");
+        if(list) list.innerHTML = '<li class="track"><p class="station-note">Playlist will appear here soon.</p></li>';
+      });
+  }
+
   // ---- Suggestion box toggle + submit feedback ----
   var suggestToggle = document.getElementById("suggestToggle");
   var suggestForm = document.getElementById("suggestForm");

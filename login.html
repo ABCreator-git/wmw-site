@@ -29,6 +29,26 @@
   @media (max-width:960px){
     .dashboard-grid.is-admin{ grid-template-columns:1fr; }
   }
+
+  .content-tabs{ display:flex; gap:0.5rem; margin-bottom:1.4rem; flex-wrap:wrap; }
+  .content-tab-btn{
+    font-family:var(--display); font-weight:700; font-size:0.85rem; color:var(--ink-soft);
+    background:rgba(255,255,255,0.7); border:1px solid var(--line); border-radius:999px;
+    padding:0.55rem 1.2rem; cursor:pointer; transition:all 0.15s ease;
+  }
+  .content-tab-btn.active{ background:var(--indigo); color:#fff; border-color:var(--indigo); }
+  .tab-panel[hidden]{ display:none !important; }
+
+  .link-row{
+    background:rgba(255,255,255,0.6); border:1px solid var(--line); border-radius:14px;
+    padding:1rem 1.2rem; display:flex; justify-content:space-between; align-items:flex-start; gap:1rem;
+  }
+  .link-row .meta{ font-family:var(--mono); font-size:0.72rem; color:var(--ink-soft); margin-bottom:0.2rem; }
+  .link-row h3{ font-size:1.02rem; font-weight:700; margin-bottom:0.3rem; }
+  .link-row a.ext-link{ font-family:var(--mono); font-size:0.78rem; color:var(--indigo); word-break:break-all; }
+  .link-row p{ font-size:0.85rem; color:var(--ink-soft); margin-top:0.3rem; }
+  .link-row .actions{ display:flex; gap:0.5rem; flex-shrink:0; }
+  .link-row .actions button{ font-size:0.78rem; padding:0.4rem 0.9rem; width:auto; }
   .top-bar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:1.4rem; }
   .home-link{
     display:inline-flex; align-items:center; gap:0.4rem;
@@ -205,49 +225,134 @@
       <p class="status" id="seedStatus"></p>
     </div>
 
-    <div class="dashboard-grid" id="dashboardGrid">
-      <div class="dashboard-col">
-        <div class="panel">
-          <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem;">Add a new poem</h2>
-          <div class="field">
-            <label for="pDate">Date label (e.g. "14 June")</label>
-            <input type="text" id="pDate" placeholder="14 June">
+    <div class="content-tabs" id="contentTabs">
+      <button class="content-tab-btn active" data-tab="poetry" type="button">Poetry</button>
+      <button class="content-tab-btn" data-tab="garage" type="button">Garage</button>
+      <button class="content-tab-btn" data-tab="music" type="button">Music</button>
+      <button class="content-tab-btn" data-tab="users" id="usersTabBtn" type="button" hidden>Users</button>
+    </div>
+
+    <div class="tab-panel" data-tab-panel="poetry">
+      <div class="dashboard-grid" id="poetryGrid">
+        <div class="dashboard-col">
+          <div class="panel">
+            <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem;">Add a new poem</h2>
+            <div class="field">
+              <label for="pDate">Date label (e.g. "14 June")</label>
+              <input type="text" id="pDate" placeholder="14 June">
+            </div>
+            <div class="field">
+              <label for="pTitle">Title</label>
+              <input type="text" id="pTitle" placeholder="Poem title">
+            </div>
+            <div class="field">
+              <label for="pBody">Lines (one per line)</label>
+              <textarea id="pBody" rows="6" placeholder="Line one&#10;Line two&#10;Line three"></textarea>
+            </div>
+            <div class="field">
+              <label for="pSign">Sign-off</label>
+              <input type="text" id="pSign" value="— A.B.">
+            </div>
+            <button class="btn" id="addBtn" style="width:auto;">Add poem</button>
+            <p class="status" id="addStatus"></p>
           </div>
-          <div class="field">
-            <label for="pTitle">Title</label>
-            <input type="text" id="pTitle" placeholder="Poem title">
+
+          <div class="panel">
+            <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem;">My poems</h2>
+            <div class="entry-list" id="entryList"></div>
           </div>
-          <div class="field">
-            <label for="pBody">Lines (one per line)</label>
-            <textarea id="pBody" rows="6" placeholder="Line one&#10;Line two&#10;Line three"></textarea>
-          </div>
-          <div class="field">
-            <label for="pSign">Sign-off</label>
-            <input type="text" id="pSign" value="— A.B.">
-          </div>
-          <button class="btn" id="addBtn" style="width:auto;">Add poem</button>
-          <p class="status" id="addStatus"></p>
         </div>
 
-        <div class="panel">
-          <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem;">My poems</h2>
-          <div class="entry-list" id="entryList"></div>
+        <div class="dashboard-col">
+          <div class="panel" id="adminPoemsPanel" hidden>
+            <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem;">All poems <span class="admin-badge">Admin</span></h2>
+            <div class="entry-list" id="adminEntryList"></div>
+          </div>
         </div>
       </div>
+    </div>
 
-      <div class="dashboard-col">
-        <div class="panel" id="adminPoemsPanel" hidden>
-          <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem;">All poems <span class="admin-badge">Admin</span></h2>
-          <div class="entry-list" id="adminEntryList"></div>
+    <div class="tab-panel" data-tab-panel="garage" hidden>
+      <div class="dashboard-grid" id="garageGrid">
+        <div class="dashboard-col">
+          <div class="panel">
+            <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:0.4rem;">Add a garage post</h2>
+            <p style="font-family:var(--serif); font-size:0.88rem; color:var(--ink-soft); margin-bottom:1rem;">
+              Post the picture on your own Instagram first, then paste the post/reel link here — the photo is pulled straight from Instagram, nothing is uploaded to this site.
+            </p>
+            <div class="field">
+              <label for="gUrl">Instagram post URL</label>
+              <input type="url" id="gUrl" placeholder="https://www.instagram.com/p/XXXXXXXXXXX/">
+            </div>
+            <div class="field">
+              <label for="gCaption">Caption (optional)</label>
+              <textarea id="gCaption" rows="3" placeholder="A line or two about this one"></textarea>
+            </div>
+            <button class="btn" id="garageAddBtn" style="width:auto;">Add post</button>
+            <p class="status" id="garageAddStatus"></p>
+          </div>
+
+          <div class="panel">
+            <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem;">My garage posts</h2>
+            <div class="entry-list" id="garageEntryList"></div>
+          </div>
         </div>
 
-        <div class="panel" id="adminUsersPanel" hidden>
-          <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem;">Registered users <span class="admin-badge">Admin</span></h2>
-          <table class="user-table" id="userTable">
-            <thead><tr><th>Name</th><th>Email</th><th>Signed up via</th><th>Joined</th></tr></thead>
-            <tbody id="userTableBody"></tbody>
-          </table>
+        <div class="dashboard-col">
+          <div class="panel" id="adminGaragePanel" hidden>
+            <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem;">All garage posts <span class="admin-badge">Admin</span></h2>
+            <div class="entry-list" id="adminGarageEntryList"></div>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" data-tab-panel="music" hidden>
+      <div class="dashboard-grid" id="musicGrid">
+        <div class="dashboard-col">
+          <div class="panel">
+            <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:0.4rem;">Add a track</h2>
+            <p style="font-family:var(--serif); font-size:0.88rem; color:var(--ink-soft); margin-bottom:1rem;">
+              Paste a YouTube link. Every track added here joins one shared playlist on the homepage.
+            </p>
+            <div class="field">
+              <label for="mUrl">YouTube URL</label>
+              <input type="url" id="mUrl" placeholder="https://www.youtube.com/watch?v=XXXXXXXXXXX">
+            </div>
+            <div class="field">
+              <label for="mTitle">Title</label>
+              <input type="text" id="mTitle" placeholder="Song title">
+            </div>
+            <div class="field">
+              <label for="mNote">Note (optional)</label>
+              <textarea id="mNote" rows="3" placeholder="Why this one's in rotation"></textarea>
+            </div>
+            <button class="btn" id="musicAddBtn" style="width:auto;">Add track</button>
+            <p class="status" id="musicAddStatus"></p>
+          </div>
+
+          <div class="panel">
+            <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem;">My tracks</h2>
+            <div class="entry-list" id="musicEntryList"></div>
+          </div>
+        </div>
+
+        <div class="dashboard-col">
+          <div class="panel" id="adminMusicPanel" hidden>
+            <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem;">All tracks <span class="admin-badge">Admin</span></h2>
+            <div class="entry-list" id="adminMusicEntryList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" data-tab-panel="users" id="usersTabPanel" hidden>
+      <div class="panel" id="adminUsersPanel">
+        <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem;">Registered users <span class="admin-badge">Admin</span></h2>
+        <table class="user-table" id="userTable">
+          <thead><tr><th>Name</th><th>Email</th><th>Signed up via</th><th>Joined</th></tr></thead>
+          <tbody id="userTableBody"></tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -275,8 +380,13 @@
   var sessionEmailEl = document.getElementById('sessionEmail');
   var seedPanel = document.getElementById('seedPanel');
   var adminPoemsPanel = document.getElementById('adminPoemsPanel');
+  var adminGaragePanel = document.getElementById('adminGaragePanel');
+  var adminMusicPanel = document.getElementById('adminMusicPanel');
   var adminUsersPanel = document.getElementById('adminUsersPanel');
-  var dashboardGrid = document.getElementById('dashboardGrid');
+  var usersTabBtn = document.getElementById('usersTabBtn');
+  var poetryGrid = document.getElementById('poetryGrid');
+  var garageGrid = document.getElementById('garageGrid');
+  var musicGrid = document.getElementById('musicGrid');
   var adminWrap = document.getElementById('adminWrap');
 
   var token = null, userEmail = null, userIsAdmin = false;
@@ -287,6 +397,18 @@
     });
   }
   function authHeaders(){ return { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }; }
+
+  // ---- Content tabs (Poetry / Garage / Music / Users) ----
+  (function(){
+    var tabButtons = Array.prototype.slice.call(document.querySelectorAll('.content-tab-btn'));
+    var tabPanels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
+    tabButtons.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        tabButtons.forEach(function(b){ b.classList.toggle('active', b === btn); });
+        tabPanels.forEach(function(p){ p.hidden = (p.dataset.tabPanel !== btn.dataset.tab); });
+      });
+    });
+  })();
 
   function saveSession(t, email, isAdminFlag){
     token = t; userEmail = email; userIsAdmin = !!isAdminFlag;
@@ -305,10 +427,16 @@
     sessionEmailEl.textContent = 'Logged in as ' + userEmail + (userIsAdmin ? ' (admin)' : '');
     seedPanel.hidden = !userIsAdmin;
     adminPoemsPanel.hidden = !userIsAdmin;
-    adminUsersPanel.hidden = !userIsAdmin;
-    if(dashboardGrid) dashboardGrid.classList.toggle('is-admin', userIsAdmin);
+    adminGaragePanel.hidden = !userIsAdmin;
+    adminMusicPanel.hidden = !userIsAdmin;
+    if(usersTabBtn) usersTabBtn.hidden = !userIsAdmin;
+    if(poetryGrid) poetryGrid.classList.toggle('is-admin', userIsAdmin);
+    if(garageGrid) garageGrid.classList.toggle('is-admin', userIsAdmin);
+    if(musicGrid) musicGrid.classList.toggle('is-admin', userIsAdmin);
     loadMyPoems();
-    if(userIsAdmin){ loadAllPoemsAdmin(); loadUsers(); }
+    loadMyGarage();
+    loadMyMusic();
+    if(userIsAdmin){ loadAllPoemsAdmin(); loadAllGarageAdmin(); loadAllMusicAdmin(); loadUsers(); }
   }
 
   try {
@@ -478,7 +606,7 @@
         '<h3>' + escapeHtml(poem.title) + '</h3>' +
         '<div style="font-size:0.85rem; color:var(--ink-soft); white-space:pre-line;">' + escapeHtml(poem.body.join('\n')) + '</div>' +
       '</div>' +
-      '<div class="actions"><button class="btn ghost" data-action="delete" data-id="' + poem.id + '">Delete</button></div>';
+      '<div class="actions"><button class="btn ghost" data-action="delete" data-kind="poems" data-id="' + poem.id + '">Delete</button></div>';
     return row;
   }
 
@@ -501,20 +629,154 @@
     }
   }
 
+  // ---- Garage (Instagram links) ----
+  var myGarage = [], allGarageAdmin = [];
+
+  function renderLinkList(container, items, emptyMsg, rowFn){
+    if(!items.length){ container.innerHTML = '<p class="status">' + emptyMsg + '</p>'; return; }
+    container.innerHTML = '';
+    items.forEach(function(item){ container.appendChild(rowFn(item)); });
+  }
+
+  function renderGarageRow(post){
+    var row = document.createElement('div');
+    row.className = 'link-row';
+    row.innerHTML =
+      '<div>' +
+        '<div class="meta">' + (post.author ? escapeHtml(post.author) + ' · ' : '') + new Date(post.createdAt || Date.now()).toLocaleDateString() + '</div>' +
+        (post.caption ? '<p>' + escapeHtml(post.caption) + '</p>' : '') +
+        '<a class="ext-link" href="' + escapeHtml(post.instagramUrl) + '" target="_blank" rel="noopener">' + escapeHtml(post.instagramUrl) + '</a>' +
+      '</div>' +
+      '<div class="actions"><button class="btn ghost" data-action="delete" data-kind="garage" data-id="' + post.id + '">Delete</button></div>';
+    return row;
+  }
+
+  function addGarageToLocalState(post){
+    myGarage.push(post);
+    renderLinkList(document.getElementById('garageEntryList'), myGarage, "You haven't posted anything to the garage yet.", renderGarageRow);
+    if(userIsAdmin){
+      allGarageAdmin.push(post);
+      renderLinkList(document.getElementById('adminGarageEntryList'), allGarageAdmin, 'No garage posts yet.', renderGarageRow);
+    }
+  }
+  function removeGarageFromLocalState(id){
+    myGarage = myGarage.filter(function(p){ return p.id !== id; });
+    renderLinkList(document.getElementById('garageEntryList'), myGarage, "You haven't posted anything to the garage yet.", renderGarageRow);
+    if(userIsAdmin){
+      allGarageAdmin = allGarageAdmin.filter(function(p){ return p.id !== id; });
+      renderLinkList(document.getElementById('adminGarageEntryList'), allGarageAdmin, 'No garage posts yet.', renderGarageRow);
+    }
+  }
+
+  function loadMyGarage(){
+    var el = document.getElementById('garageEntryList');
+    el.innerHTML = '<p class="status">Loading…</p>';
+    fetch(API_BASE + '/garage/mine', { headers: authHeaders() })
+      .then(function(r){ return r.json().then(function(d){ return { ok:r.ok, status:r.status, data:d }; }); })
+      .then(function(res){
+        if(!res.ok) throw new Error((res.data && res.data.error) || ('Request failed (' + res.status + ')'));
+        myGarage = res.data;
+        renderLinkList(el, myGarage, "You haven't posted anything to the garage yet.", renderGarageRow);
+      })
+      .catch(function(err){ el.innerHTML = '<p class="status error">Could not load: ' + escapeHtml(err.message) + '</p>'; });
+  }
+
+  function loadAllGarageAdmin(){
+    var el = document.getElementById('adminGarageEntryList');
+    el.innerHTML = '<p class="status">Loading…</p>';
+    fetch(API_BASE + '/garage')
+      .then(function(r){ return r.json().then(function(d){ return { ok:r.ok, status:r.status, data:d }; }); })
+      .then(function(res){
+        if(!res.ok) throw new Error((res.data && res.data.error) || ('Request failed (' + res.status + ')'));
+        allGarageAdmin = res.data;
+        renderLinkList(el, allGarageAdmin, 'No garage posts yet.', renderGarageRow);
+      })
+      .catch(function(err){ el.innerHTML = '<p class="status error">Could not load: ' + escapeHtml(err.message) + '</p>'; });
+  }
+
+  // ---- Music (YouTube links, one shared playlist) ----
+  var myMusic = [], allMusicAdmin = [];
+
+  function renderMusicRow(track){
+    var row = document.createElement('div');
+    row.className = 'link-row';
+    row.innerHTML =
+      '<div>' +
+        '<div class="meta">' + (track.author ? escapeHtml(track.author) + ' · ' : '') + new Date(track.createdAt || Date.now()).toLocaleDateString() + '</div>' +
+        '<h3>' + escapeHtml(track.title) + '</h3>' +
+        (track.note ? '<p>' + escapeHtml(track.note) + '</p>' : '') +
+        '<a class="ext-link" href="' + escapeHtml(track.youtubeUrl) + '" target="_blank" rel="noopener">' + escapeHtml(track.youtubeUrl) + '</a>' +
+      '</div>' +
+      '<div class="actions"><button class="btn ghost" data-action="delete" data-kind="music" data-id="' + track.id + '">Delete</button></div>';
+    return row;
+  }
+
+  function addMusicToLocalState(track){
+    myMusic.push(track);
+    renderLinkList(document.getElementById('musicEntryList'), myMusic, "You haven't added any tracks yet.", renderMusicRow);
+    if(userIsAdmin){
+      allMusicAdmin.push(track);
+      renderLinkList(document.getElementById('adminMusicEntryList'), allMusicAdmin, 'No tracks yet.', renderMusicRow);
+    }
+  }
+  function removeMusicFromLocalState(id){
+    myMusic = myMusic.filter(function(t){ return t.id !== id; });
+    renderLinkList(document.getElementById('musicEntryList'), myMusic, "You haven't added any tracks yet.", renderMusicRow);
+    if(userIsAdmin){
+      allMusicAdmin = allMusicAdmin.filter(function(t){ return t.id !== id; });
+      renderLinkList(document.getElementById('adminMusicEntryList'), allMusicAdmin, 'No tracks yet.', renderMusicRow);
+    }
+  }
+
+  function loadMyMusic(){
+    var el = document.getElementById('musicEntryList');
+    el.innerHTML = '<p class="status">Loading…</p>';
+    fetch(API_BASE + '/music/mine', { headers: authHeaders() })
+      .then(function(r){ return r.json().then(function(d){ return { ok:r.ok, status:r.status, data:d }; }); })
+      .then(function(res){
+        if(!res.ok) throw new Error((res.data && res.data.error) || ('Request failed (' + res.status + ')'));
+        myMusic = res.data;
+        renderLinkList(el, myMusic, "You haven't added any tracks yet.", renderMusicRow);
+      })
+      .catch(function(err){ el.innerHTML = '<p class="status error">Could not load: ' + escapeHtml(err.message) + '</p>'; });
+  }
+
+  function loadAllMusicAdmin(){
+    var el = document.getElementById('adminMusicEntryList');
+    el.innerHTML = '<p class="status">Loading…</p>';
+    fetch(API_BASE + '/music')
+      .then(function(r){ return r.json().then(function(d){ return { ok:r.ok, status:r.status, data:d }; }); })
+      .then(function(res){
+        if(!res.ok) throw new Error((res.data && res.data.error) || ('Request failed (' + res.status + ')'));
+        allMusicAdmin = res.data;
+        renderLinkList(el, allMusicAdmin, 'No tracks yet.', renderMusicRow);
+      })
+      .catch(function(err){ el.innerHTML = '<p class="status error">Could not load: ' + escapeHtml(err.message) + '</p>'; });
+  }
+
+  // ---- Shared delete handler across poems / garage / music ----
   function handleDeleteClick(e){
     var btn = e.target.closest('button[data-action="delete"]');
     if(!btn) return;
-    if(!confirm('Delete this poem? This cannot be undone.')) return;
-    fetch(API_BASE + '/poems/' + btn.dataset.id, { method:'DELETE', headers: authHeaders() })
+    var kind = btn.dataset.kind || 'poems';
+    var labels = { poems: 'poem', garage: 'garage post', music: 'track' };
+    if(!confirm('Delete this ' + (labels[kind] || 'item') + '? This cannot be undone.')) return;
+    fetch(API_BASE + '/' + kind + '/' + btn.dataset.id, { method:'DELETE', headers: authHeaders() })
       .then(function(r){ return r.json().then(function(d){ return {ok:r.ok, data:d}; }); })
       .then(function(res){
         if(!res.ok) throw new Error(res.data.error || 'Delete failed');
-        removePoemFromLocalState(btn.dataset.id);
+        if(kind === 'garage') removeGarageFromLocalState(btn.dataset.id);
+        else if(kind === 'music') removeMusicFromLocalState(btn.dataset.id);
+        else removePoemFromLocalState(btn.dataset.id);
       })
       .catch(function(err){ alert(err.message); });
   }
   document.getElementById('entryList').addEventListener('click', handleDeleteClick);
   document.getElementById('adminEntryList').addEventListener('click', handleDeleteClick);
+  document.getElementById('garageEntryList').addEventListener('click', handleDeleteClick);
+  document.getElementById('adminGarageEntryList').addEventListener('click', handleDeleteClick);
+  document.getElementById('musicEntryList').addEventListener('click', handleDeleteClick);
+  document.getElementById('adminMusicEntryList').addEventListener('click', handleDeleteClick);
 
   document.getElementById('seedBtn').addEventListener('click', function(){
     var status = document.getElementById('seedStatus');
@@ -559,6 +821,54 @@
         document.getElementById('pTitle').value = '';
         document.getElementById('pBody').value = '';
         addPoemToLocalState(saved);
+      })
+      .catch(function(err){ status.textContent = err.message; status.className = 'status error'; });
+  });
+
+  document.getElementById('garageAddBtn').addEventListener('click', function(){
+    var instagramUrl = document.getElementById('gUrl').value.trim();
+    var caption = document.getElementById('gCaption').value.trim();
+    var status = document.getElementById('garageAddStatus');
+
+    if(!instagramUrl){ status.textContent = 'Paste an Instagram post/reel URL.'; status.className = 'status error'; return; }
+
+    status.textContent = 'Saving…'; status.className = 'status';
+    fetch(API_BASE + '/garage', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ instagramUrl: instagramUrl, caption: caption })
+    })
+      .then(function(r){ return r.json().then(function(d){ return { ok:r.ok, data:d }; }); })
+      .then(function(res){
+        if(!res.ok) throw new Error(res.data.error || 'Save failed');
+        status.textContent = 'Posted.'; status.className = 'status ok';
+        document.getElementById('gUrl').value = '';
+        document.getElementById('gCaption').value = '';
+        addGarageToLocalState(res.data);
+      })
+      .catch(function(err){ status.textContent = err.message; status.className = 'status error'; });
+  });
+
+  document.getElementById('musicAddBtn').addEventListener('click', function(){
+    var youtubeUrl = document.getElementById('mUrl').value.trim();
+    var title = document.getElementById('mTitle').value.trim();
+    var note = document.getElementById('mNote').value.trim();
+    var status = document.getElementById('musicAddStatus');
+
+    if(!youtubeUrl || !title){ status.textContent = 'A YouTube link and a title are required.'; status.className = 'status error'; return; }
+
+    status.textContent = 'Saving…'; status.className = 'status';
+    fetch(API_BASE + '/music', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ youtubeUrl: youtubeUrl, title: title, note: note })
+    })
+      .then(function(r){ return r.json().then(function(d){ return { ok:r.ok, data:d }; }); })
+      .then(function(res){
+        if(!res.ok) throw new Error(res.data.error || 'Save failed');
+        status.textContent = 'Added to the playlist.'; status.className = 'status ok';
+        document.getElementById('mUrl').value = '';
+        document.getElementById('mTitle').value = '';
+        document.getElementById('mNote').value = '';
+        addMusicToLocalState(res.data);
       })
       .catch(function(err){ status.textContent = err.message; status.className = 'status error'; });
   });

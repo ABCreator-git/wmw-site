@@ -145,6 +145,48 @@ async function savePoems(env, poems) {
   await env.POEMS_KV.put("poems", JSON.stringify(poems));
 }
 
+// ---------- garage posts storage (Instagram links, no image hosting) ----------
+async function getGaragePosts(env) {
+  const raw = await env.POEMS_KV.get("garage");
+  return raw ? JSON.parse(raw) : [];
+}
+async function saveGaragePosts(env, posts) {
+  await env.POEMS_KV.put("garage", JSON.stringify(posts));
+}
+function isInstagramUrl(url) {
+  try {
+    const u = new URL(url);
+    const host = u.hostname.toLowerCase();
+    if (host !== "instagram.com" && !host.endsWith(".instagram.com")) return false;
+    return /^\/(p|reel|reels|tv)\//.test(u.pathname);
+  } catch (e) { return false; }
+}
+
+// ---------- music tracks storage (YouTube links, combined into one playlist) ----------
+async function getTracks(env) {
+  const raw = await env.POEMS_KV.get("music");
+  return raw ? JSON.parse(raw) : [];
+}
+async function saveTracks(env, tracks) {
+  await env.POEMS_KV.put("music", JSON.stringify(tracks));
+}
+function extractYouTubeId(url) {
+  try {
+    const u = new URL(url);
+    const host = u.hostname.toLowerCase().replace(/^www\./, "");
+    if (host === "youtu.be") {
+      const id = u.pathname.slice(1).split("/")[0];
+      return id || null;
+    }
+    if (host === "youtube.com" || host === "m.youtube.com" || host === "music.youtube.com") {
+      if (u.pathname === "/watch") return u.searchParams.get("v");
+      const m = u.pathname.match(/^\/(embed|shorts)\/([^/?]+)/);
+      if (m) return m[2];
+    }
+    return null;
+  } catch (e) { return null; }
+}
+
 async function requireSession(request, env) {
   const auth = request.headers.get("Authorization") || "";
   const token = auth.replace(/^Bearer\s+/i, "").trim();
@@ -211,6 +253,16 @@ export default {
       return json(await getPoems(env));
     }
 
+    // ---------- PUBLIC GARAGE FEED ----------
+    if (method === "GET" && url.pathname === "/garage") {
+      return json(await getGaragePosts(env));
+    }
+
+    // ---------- PUBLIC MUSIC FEED ----------
+    if (method === "GET" && url.pathname === "/music") {
+      return json(await getTracks(env));
+    }
+
     // Everything below requires a logged-in session
     const sessionEmail = await requireSession(request, env);
     if (!sessionEmail) return json({ error: "Unauthorized" }, 401);
@@ -264,6 +316,121 @@ export default {
       }
       const next = poems.filter((p) => p.id !== id);
       await savePoems(env, next);
+      return json({ deleted: id });
+    }
+
+    // ---------- GARAGE (Instagram-linked posts, no image upload/hosting) ----------
+    if (method === "GET" && url.pathname === "/garage/mine") {
+      const posts = await getGaragePosts(env);
+      return json(posts.filter((p) => (p.author || "").toLowerCase() === sessionEmail.toLowerCase()));
+    }
+
+    if (method === "POST" && url.pathname === "/garage") {
+      const body = await request.json().catch(() => null);
+      if (!body || !body.instagramUrl) return json({ error: "Missing Instagram post URL" }, 400);
+      if (!isInstagramUrl(body.instagramUrl)) {
+        return json({ error: "That doesn't look like an Instagram post/reel URL (e.g. https://www.instagram.com/p/XXXXXXX/)" }, 400);
+      }
+      const posts = await getGaragePosts(env);
+      const newPost = {
+        id: crypto.randomUUID(),
+        instagramUrl: body.instagramUrl,
+        caption: (body.caption || "").slice(0, 500),
+        author: sessionEmail,
+        createdAt: Date.now(),
+      };
+      posts.push(newPost);
+      await saveGaragePosts(env, posts);
+      return json(newPost, 201);
+    }
+
+    if (method === "PUT" && url.pathname.startsWith("/garage/")) {
+      const id = url.pathname.split("/garage/")[1];
+      const body = await request.json().catch(() => null);
+      if (!body) return json({ error: "Invalid body" }, 400);
+      if (body.instagramUrl && !isInstagramUrl(body.instagramUrl)) {
+        return json({ error: "That doesn't look like an Instagram post/reel URL" }, 400);
+      }
+      const posts = await getGaragePosts(env);
+      const idx = posts.findIndex((p) => p.id === id);
+      if (idx === -1) return json({ error: "Not found" }, 404);
+      if (!admin && (posts[idx].author || "").toLowerCase() !== sessionEmail.toLowerCase()) {
+        return json({ error: "You can only edit your own garage posts" }, 403);
+      }
+      posts[idx] = { ...posts[idx], ...body, id, author: posts[idx].author };
+      await saveGaragePosts(env, posts);
+      return json(posts[idx]);
+    }
+
+    if (method === "DELETE" && url.pathname.startsWith("/garage/")) {
+      const id = url.pathname.split("/garage/")[1];
+      const posts = await getGaragePosts(env);
+      const target = posts.find((p) => p.id === id);
+      if (!target) return json({ error: "Not found" }, 404);
+      if (!admin && (target.author || "").toLowerCase() !== sessionEmail.toLowerCase()) {
+        return json({ error: "You can only delete your own garage posts" }, 403);
+      }
+      const next = posts.filter((p) => p.id !== id);
+      await saveGaragePosts(env, next);
+      return json({ deleted: id });
+    }
+
+    // ---------- MUSIC (YouTube-linked tracks, combined into one playlist) ----------
+    if (method === "GET" && url.pathname === "/music/mine") {
+      const tracks = await getTracks(env);
+      return json(tracks.filter((t) => (t.author || "").toLowerCase() === sessionEmail.toLowerCase()));
+    }
+
+    if (method === "POST" && url.pathname === "/music") {
+      const body = await request.json().catch(() => null);
+      if (!body || !body.youtubeUrl || !body.title) return json({ error: "Missing YouTube URL or title" }, 400);
+      const videoId = extractYouTubeId(body.youtubeUrl);
+      if (!videoId) return json({ error: "Couldn't find a video in that YouTube link" }, 400);
+      const tracks = await getTracks(env);
+      const newTrack = {
+        id: crypto.randomUUID(),
+        youtubeUrl: body.youtubeUrl,
+        videoId,
+        title: String(body.title).slice(0, 140),
+        note: (body.note || "").slice(0, 300),
+        author: sessionEmail,
+        createdAt: Date.now(),
+      };
+      tracks.push(newTrack);
+      await saveTracks(env, tracks);
+      return json(newTrack, 201);
+    }
+
+    if (method === "PUT" && url.pathname.startsWith("/music/")) {
+      const id = url.pathname.split("/music/")[1];
+      const body = await request.json().catch(() => null);
+      if (!body) return json({ error: "Invalid body" }, 400);
+      let videoId;
+      if (body.youtubeUrl) {
+        videoId = extractYouTubeId(body.youtubeUrl);
+        if (!videoId) return json({ error: "Couldn't find a video in that YouTube link" }, 400);
+      }
+      const tracks = await getTracks(env);
+      const idx = tracks.findIndex((t) => t.id === id);
+      if (idx === -1) return json({ error: "Not found" }, 404);
+      if (!admin && (tracks[idx].author || "").toLowerCase() !== sessionEmail.toLowerCase()) {
+        return json({ error: "You can only edit your own tracks" }, 403);
+      }
+      tracks[idx] = { ...tracks[idx], ...body, ...(videoId ? { videoId } : {}), id, author: tracks[idx].author };
+      await saveTracks(env, tracks);
+      return json(tracks[idx]);
+    }
+
+    if (method === "DELETE" && url.pathname.startsWith("/music/")) {
+      const id = url.pathname.split("/music/")[1];
+      const tracks = await getTracks(env);
+      const target = tracks.find((t) => t.id === id);
+      if (!target) return json({ error: "Not found" }, 404);
+      if (!admin && (target.author || "").toLowerCase() !== sessionEmail.toLowerCase()) {
+        return json({ error: "You can only delete your own tracks" }, 403);
+      }
+      const next = tracks.filter((t) => t.id !== id);
+      await saveTracks(env, next);
       return json({ deleted: id });
     }
 
