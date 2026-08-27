@@ -294,7 +294,24 @@
 
   try {
     var saved = JSON.parse(localStorage.getItem('wmw_session') || 'null');
-    if(saved && saved.token && saved.email){ saveSession(saved.token, saved.email, saved.isAdmin); }
+    if(saved && saved.token && saved.email){
+      // Show the app immediately with the cached admin flag, then re-check
+      // with the server in the background. The cached flag can be stale
+      // (e.g. it was saved as `false` before ADMIN_EMAIL was configured
+      // on the Worker) — without this refresh, "log out and log back in"
+      // is the ONLY thing that updates it, and the admin panels stay
+      // hidden forever otherwise even after the server-side config is fixed.
+      saveSession(saved.token, saved.email, saved.isAdmin);
+      token = saved.token; // needed by authHeaders() before saveSession's own assignment settles
+      fetch(API_BASE + '/admin/check', { headers: authHeaders() })
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          if(typeof d.isAdmin === 'boolean' && d.isAdmin !== userIsAdmin){
+            saveSession(saved.token, saved.email, d.isAdmin);
+          }
+        })
+        .catch(function(){ /* offline or Worker unreachable — keep cached state */ });
+    }
   } catch(e){}
 
   document.getElementById('logoutBtn').addEventListener('click', clearSession);
@@ -395,9 +412,10 @@
     var entryList = document.getElementById('adminEntryList');
     entryList.innerHTML = '<p class="status">Loading…</p>';
     fetch(API_BASE + '/poems')
-      .then(function(r){ return r.json(); })
-      .then(function(poems){
-        allPoemsAdmin = poems;
+      .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, status: r.status, data: d }; }); })
+      .then(function(res){
+        if(!res.ok) throw new Error((res.data && res.data.error) || ('Request failed (' + res.status + ')'));
+        allPoemsAdmin = res.data;
         renderList(entryList, allPoemsAdmin, 'No poems yet.');
       })
       .catch(function(err){ entryList.innerHTML = '<p class="status error">Could not load: ' + escapeHtml(err.message) + '</p>'; });
@@ -407,9 +425,16 @@
     var body = document.getElementById('userTableBody');
     body.innerHTML = '<tr><td colspan="4">Loading…</td></tr>';
     fetch(API_BASE + '/admin/users', { headers: authHeaders() })
-      .then(function(r){ return r.json(); })
-      .then(function(users){
-        if(!users.length){ body.innerHTML = '<tr><td colspan="4">No users yet.</td></tr>'; return; }
+      .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, status: r.status, data: d }; }); })
+      .then(function(res){
+        // Surface real errors (403 not-admin, 401 expired session, 404 old
+        // worker version without this route, 500 misconfigured KV binding,
+        // etc) instead of silently showing "No users yet" for all of them.
+        if(!res.ok){
+          throw new Error((res.data && res.data.error) || ('Request failed (HTTP ' + res.status + '). If this is 404, the Worker deployed on Cloudflare is missing the /admin/users route — re-paste the latest worker.js into the Worker\'s code editor and deploy.'));
+        }
+        var users = res.data;
+        if(!Array.isArray(users) || !users.length){ body.innerHTML = '<tr><td colspan="4">No users yet.</td></tr>'; return; }
         body.innerHTML = '';
         users.forEach(function(u){
           var tr = document.createElement('tr');
@@ -422,7 +447,7 @@
           body.appendChild(tr);
         });
       })
-      .catch(function(err){ body.innerHTML = '<tr><td colspan="4">Could not load: ' + escapeHtml(err.message) + '</td></tr>'; });
+      .catch(function(err){ body.innerHTML = '<tr><td colspan="4" class="status error">Could not load: ' + escapeHtml(err.message) + '</td></tr>'; });
   }
 
   function renderRow(poem){
